@@ -60,8 +60,16 @@ async function carregarProdutos() {
         <span>R$ ${Number(produto.preco).toFixed(2)}</span>
       </div>
 
-      <div>
-        ${produto.indisponivel ? "🔴 Indisponível" : "🟢 Disponível"}
+      <div class="produto-acoes">
+        <span>${produto.indisponivel ? "🔴 Indisponível" : "🟢 Disponível"}</span>
+
+        <button onclick="alternarDisponibilidade('${produto.id}', ${produto.indisponivel})">
+          ${produto.indisponivel ? "Ativar" : "Pausar"}
+        </button>
+
+        <button class="btn-excluir" onclick="excluirProduto('${produto.id}')">
+          Excluir
+        </button>
       </div>
     </div>
   `).join("");
@@ -95,5 +103,43 @@ formProduto.addEventListener("submit", async (e) => {
   formProduto.classList.add("oculto");
   carregarProdutos();
 });
+
+async function alternarDisponibilidade(id, indisponivelAtual) {
+  const { error } = await supabaseClient
+    .from("produtos")
+    .update({
+      indisponivel: !indisponivelAtual
+    })
+    .eq("id", id)
+    .eq("loja_id", lojaAtual);
+
+  if (error) {
+    alert("Erro ao alterar disponibilidade.");
+    console.error(error);
+    return;
+  }
+
+  carregarProdutos();
+}
+
+async function excluirProduto(id) {
+  const confirmar = confirm("Tem certeza que deseja excluir este produto?");
+
+  if (!confirmar) return;
+
+  const { error } = await supabaseClient
+    .from("produtos")
+    .delete()
+    .eq("id", id)
+    .eq("loja_id", lojaAtual);
+
+  if (error) {
+    alert("Erro ao excluir produto.");
+    console.error(error);
+    return;
+  }
+
+  carregarProdutos();
+}
 
 carregarLoja();
