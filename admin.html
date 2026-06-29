@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Painel - DeliveryOS</title>
+  <title>Dashboard - DeliveryOS</title>
   <link rel="stylesheet" href="assets/css/admin.css">
 </head>
 <body>
@@ -14,24 +14,28 @@
     <h2>DeliveryOS</h2>
 
     <nav>
-      <a class="active">Dashboard</a>
-      <a>Pedidos</a>
-      <a href="produtos.html">Produtos</a>
-      <a>Categorias</a>
-      <a>Adicionais</a>
-      <a>Relatórios</a>
-      <a>Configurações</a>
+      <a class="active" href="admin.html">📊 Dashboard</a>
+      <a>📦 Pedidos</a>
+      <a href="produtos.html">🍔 Produtos</a>
+      <a>📂 Categorias</a>
+      <a>🧀 Adicionais</a>
+      <a>📈 Relatórios</a>
+      <a>⚙️ Configurações</a>
     </nav>
   </aside>
 
   <main class="content">
+
     <header class="topbar">
       <div>
         <h1>Dashboard</h1>
-        <p>Visão geral da sua loja</p>
+        <p>Resumo geral da sua loja hoje.</p>
       </div>
 
-      <button id="sair">Sair</button>
+      <div class="topbar-actions">
+        <button class="notification">🔔</button>
+        <button id="sair">Sair</button>
+      </div>
     </header>
 
     <section class="cards">
@@ -52,14 +56,36 @@
 
       <div class="card">
         <span>Status da loja</span>
-        <strong>Aberta</strong>
+        <strong class="status-open">Aberta</strong>
       </div>
     </section>
 
-    <section class="panel">
-      <h2>Pedidos recentes</h2>
-      <p>Nenhum pedido recebido ainda.</p>
+    <section class="dashboard-grid">
+      <div class="panel">
+        <h2>Pedidos recentes</h2>
+        <p>Nenhum pedido recebido ainda.</p>
+      </div>
+
+      <div class="panel">
+        <h2>Resumo rápido</h2>
+
+        <div class="summary-item">
+          <span>Ticket médio</span>
+          <strong>R$ 0,00</strong>
+        </div>
+
+        <div class="summary-item">
+          <span>Produto mais vendido</span>
+          <strong>Nenhum</strong>
+        </div>
+
+        <div class="summary-item">
+          <span>Faturamento mensal</span>
+          <strong>R$ 0,00</strong>
+        </div>
+      </div>
     </section>
+
   </main>
 
 </div>
