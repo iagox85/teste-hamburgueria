@@ -204,3 +204,26 @@ body {
     gap: 14px;
   }
 }
+.produto-acoes {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.produto-acoes button {
+  border: none;
+  padding: 9px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.produto-acoes button {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+.produto-acoes .btn-excluir {
+  background: #fee2e2;
+  color: #b91c1c;
+}
