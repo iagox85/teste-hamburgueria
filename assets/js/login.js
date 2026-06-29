@@ -9,7 +9,7 @@ formLogin.addEventListener("submit", async (e) => {
 
   mensagemLogin.innerText = "Entrando...";
 
-  const { data, error } = await supabase.auth.signInWithPassword({
+  const { data, error } = await supabaseClient.auth.signInWithPassword({
     email: email,
     password: senha
   });
