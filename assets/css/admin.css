@@ -135,3 +135,71 @@ body {
     gap: 15px;
   }
 }
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+#btnNovoProduto,
+.form-produto button {
+  padding: 12px 16px;
+  border: none;
+  background: #ef4444;
+  color: white;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.form-produto {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr 180px 160px;
+  gap: 12px;
+  margin-bottom: 25px;
+}
+
+.form-produto input,
+.form-produto textarea {
+  padding: 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  resize: none;
+}
+
+.produto-admin-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  margin-bottom: 12px;
+  background: #fff;
+}
+
+.produto-admin-item strong {
+  font-size: 18px;
+}
+
+.produto-admin-item p {
+  color: #6b7280;
+  margin: 5px 0;
+}
+
+.produto-admin-item span {
+  font-weight: bold;
+}
+
+@media (max-width: 900px) {
+  .form-produto {
+    grid-template-columns: 1fr;
+  }
+
+  .produto-admin-item {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+  }
+}
