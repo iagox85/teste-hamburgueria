@@ -1,5 +1,10 @@
 const formProduto = document.getElementById("formProduto");
 const listaProdutos = document.getElementById("listaProdutos");
+const btnNovoProduto = document.getElementById("btnNovoProduto");
+
+btnNovoProduto.addEventListener("click", () => {
+  formProduto.classList.toggle("oculto");
+});
 
 const LOJA_ID = null; // vamos ligar isso automaticamente depois
 
