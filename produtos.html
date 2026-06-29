@@ -40,12 +40,22 @@
         <button id="btnNovoProduto">+ Novo produto</button>
       </div>
 
-      <form id="formProduto" class="form-produto oculto">
-        <input type="text" id="produtoNome" placeholder="Nome do produto" required>
-        <textarea id="produtoDescricao" placeholder="Descrição"></textarea>
-        <input type="number" id="produtoPreco" placeholder="Preço" step="0.01" required>
-        <button type="submit">Salvar produto</button>
-      </form>
+      <div id="modalProduto" class="modal oculto">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>Novo produto</h2>
+      <button id="fecharModalProduto" type="button">×</button>
+    </div>
+
+    <form id="formProduto" class="form-modal">
+      <input type="text" id="produtoNome" placeholder="Nome do produto" required>
+      <textarea id="produtoDescricao" placeholder="Descrição"></textarea>
+      <input type="number" id="produtoPreco" placeholder="Preço" step="0.01" required>
+
+      <button type="submit">Salvar produto</button>
+    </form>
+  </div>
+</div>
 
       <div id="listaProdutos" class="lista-produtos"></div>
     </section>
