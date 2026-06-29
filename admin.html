@@ -8,17 +8,66 @@
 </head>
 <body>
 
-  <main class="admin-page">
-    <h1>DeliveryOS</h1>
-    <p>Bem-vindo ao painel administrativo.</p>
+<div class="admin-layout">
 
-    <button id="sair">Sair</button>
+  <aside class="sidebar">
+    <h2>DeliveryOS</h2>
+
+    <nav>
+      <a class="active">Dashboard</a>
+      <a>Pedidos</a>
+      <a>Produtos</a>
+      <a>Categorias</a>
+      <a>Adicionais</a>
+      <a>Relatórios</a>
+      <a>Configurações</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+    <header class="topbar">
+      <div>
+        <h1>Dashboard</h1>
+        <p>Visão geral da sua loja</p>
+      </div>
+
+      <button id="sair">Sair</button>
+    </header>
+
+    <section class="cards">
+      <div class="card">
+        <span>Vendas hoje</span>
+        <strong>R$ 0,00</strong>
+      </div>
+
+      <div class="card">
+        <span>Pedidos hoje</span>
+        <strong>0</strong>
+      </div>
+
+      <div class="card">
+        <span>Pedidos novos</span>
+        <strong>0</strong>
+      </div>
+
+      <div class="card">
+        <span>Status da loja</span>
+        <strong>Aberta</strong>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Pedidos recentes</h2>
+      <p>Nenhum pedido recebido ainda.</p>
+    </section>
   </main>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="assets/js/config.js"></script>
-  <script src="assets/js/supabase.js"></script>
-  <script src="assets/js/admin.js"></script>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/config.js"></script>
+<script src="assets/js/supabase.js"></script>
+<script src="assets/js/admin.js"></script>
 
 </body>
 </html>
