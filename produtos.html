@@ -54,6 +54,27 @@
 
       <input type="number" id="produtoPreco" placeholder="Preço" step="0.01" required>
 
+      <div class="campo-imagem-produto">
+        <label for="produtoImagem">Imagem do produto</label>
+
+        <div class="preview-produto-imagem" id="produtoImagemPreview">
+          <span>Sem imagem</span>
+        </div>
+
+        <input type="file" id="produtoImagem" accept="image/*">
+        <input type="hidden" id="produtoImagemUrl">
+
+        <div class="imagem-produto-acoes">
+          <button type="button" id="btnRemoverImagem" class="btn-secundario">
+            Remover imagem
+          </button>
+        </div>
+
+        <small class="ajuda-campo">
+          Recomendado: imagem quadrada ou horizontal, até 2MB.
+        </small>
+      </div>
+
       <div class="campo-grupos">
         <label>Grupos de adicionais</label>
         <div id="listaGruposProduto" class="lista-checkbox"></div>
