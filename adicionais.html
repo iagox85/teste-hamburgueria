@@ -1,186 +1,113 @@
-const btnNovoAdicional = document.getElementById("btnNovoAdicional");
-const formAdicional = document.getElementById("formAdicional");
-const listaAdicionais = document.getElementById("listaAdicionais");
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adicionais - DeliveryOS</title>
 
-let lojaAtual = null;
-let adicionaisCache = [];
-let adicionalEditandoId = null;
+    <link rel="stylesheet" href="assets/css/admin.css">
+</head>
+<body>
 
-btnNovoAdicional.addEventListener("click", () => {
-  adicionalEditandoId = null;
-  formAdicional.reset();
-  formAdicional.classList.toggle("oculto");
-});
+<div class="admin-layout">
 
-async function carregarLoja() {
-  const {
-    data: { user }
-  } = await supabaseClient.auth.getUser();
+    <aside class="sidebar">
 
-  if (!user) {
-    window.location.href = "login.html";
-    return;
-  }
+        <h2>DeliveryOS</h2>
 
-  const { data, error } = await supabaseClient
-    .from("usuarios_loja")
-    .select("loja_id")
-    .eq("user_id", user.id)
-    .single();
+        <nav>
+            <a href="admin.html">📊 Dashboard</a>
+            <a>📦 Pedidos</a>
+            <a href="produtos.html">🍔 Produtos</a>
+            <a href="categorias.html">📂 Categorias</a>
+            <a class="active" href="adicionais.html">🧀 Adicionais</a>
+            <a>📈 Relatórios</a>
+            <a>⚙️ Configurações</a>
+        </nav>
 
-  if (error || !data) {
-    alert("Usuário sem loja vinculada.");
-    console.error(error);
-    return;
-  }
+    </aside>
 
-  lojaAtual = data.loja_id;
-  carregarAdicionais();
-}
+    <main class="content">
 
-async function carregarAdicionais() {
-  const { data, error } = await supabaseClient
-    .from("adicionais")
-    .select("*")
-    .eq("loja_id", lojaAtual)
-    .order("created_at", { ascending: false });
+        <header class="topbar">
 
-  if (error) {
-    listaAdicionais.innerHTML = "<p>Erro ao carregar adicionais.</p>";
-    console.error(error);
-    return;
-  }
+            <div>
+                <h1>Adicionais</h1>
+                <p>Cadastre e gerencie os adicionais da sua loja.</p>
+            </div>
 
-  adicionaisCache = data || [];
-  renderizarAdicionais();
-}
+            <div class="topbar-actions">
+                <button class="notification">🔔</button>
+                <button id="sair">Sair</button>
+            </div>
 
-function renderizarAdicionais() {
-  if (!adicionaisCache.length) {
-    listaAdicionais.innerHTML = "<p>Nenhum adicional cadastrado ainda.</p>";
-    return;
-  }
+        </header>
 
-  listaAdicionais.innerHTML = adicionaisCache.map((adicional) => `
-    <div class="produto-admin-item">
-      <div>
-        <strong>${adicional.nome}</strong>
-        <p>${adicional.descricao || ""}</p>
-        <span>R$ ${Number(adicional.preco).toFixed(2)}</span>
-      </div>
+        <section class="panel">
 
-      <div class="produto-acoes">
-        <span>${adicional.ativo ? "🟢 Ativo" : "🔴 Pausado"}</span>
+            <div class="panel-header">
 
-        <button onclick="editarAdicional('${adicional.id}')">
-          Editar
-        </button>
+                <div>
+                    <h2>Lista de adicionais</h2>
+                    <p class="panel-subtitle">
+                        Ex.: Bacon, Catupiry, Cheddar, Ovo...
+                    </p>
+                </div>
 
-        <button onclick="alternarAdicional('${adicional.id}', ${adicional.ativo})">
-          ${adicional.ativo ? "Pausar" : "Ativar"}
-        </button>
+                <button id="btnNovoAdicional">
+                    + Novo Adicional
+                </button>
 
-        <button class="btn-excluir" onclick="excluirAdicional('${adicional.id}')">
-          Excluir
-        </button>
-      </div>
-    </div>
-  `).join("");
-}
+            </div>
 
-function editarAdicional(id) {
-  const adicional = adicionaisCache.find((item) => item.id === id);
+            <form id="formAdicional" class="form-modal oculto">
 
-  if (!adicional) return;
+                <input
+                    type="text"
+                    id="adicionalNome"
+                    placeholder="Nome do adicional"
+                    required
+                >
 
-  adicionalEditandoId = id;
+                <textarea
+                    id="adicionalDescricao"
+                    placeholder="Descrição">
+                </textarea>
 
-  document.getElementById("adicionalNome").value = adicional.nome;
-  document.getElementById("adicionalDescricao").value = adicional.descricao || "";
-  document.getElementById("adicionalPreco").value = adicional.preco;
+                <input
+                    type="number"
+                    id="adicionalPreco"
+                    placeholder="Preço"
+                    step="0.01"
+                    required
+                >
 
-  formAdicional.classList.remove("oculto");
-}
+                <button type="submit">
+                    Salvar adicional
+                </button>
 
-formAdicional.addEventListener("submit", async (e) => {
-  e.preventDefault();
+            </form>
 
-  const nome = document.getElementById("adicionalNome").value.trim();
-  const descricao = document.getElementById("adicionalDescricao").value.trim();
-  const preco = Number(document.getElementById("adicionalPreco").value);
+            <div
+                id="listaAdicionais"
+                class="lista-produtos">
+            </div>
 
-  let error;
+        </section>
 
-  if (adicionalEditandoId) {
-    const resposta = await supabaseClient
-      .from("adicionais")
-      .update({
-        nome,
-        descricao,
-        preco
-      })
-      .eq("id", adicionalEditandoId)
-      .eq("loja_id", lojaAtual);
+    </main>
 
-    error = resposta.error;
-  } else {
-    const resposta = await supabaseClient
-      .from("adicionais")
-      .insert({
-        loja_id: lojaAtual,
-        nome,
-        descricao,
-        preco,
-        ativo: true
-      });
+</div>
 
-    error = resposta.error;
-  }
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  if (error) {
-    alert("Erro ao salvar adicional.");
-    console.error(error);
-    return;
-  }
+<script src="assets/js/config.js"></script>
 
-  adicionalEditandoId = null;
-  formAdicional.reset();
-  formAdicional.classList.add("oculto");
-  carregarAdicionais();
-});
+<script src="assets/js/supabase.js"></script>
 
-async function alternarAdicional(id, ativoAtual) {
-  const { error } = await supabaseClient
-    .from("adicionais")
-    .update({ ativo: !ativoAtual })
-    .eq("id", id)
-    .eq("loja_id", lojaAtual);
+<script src="assets/js/admin.js"></script>
 
-  if (error) {
-    alert("Erro ao alterar adicional.");
-    console.error(error);
-    return;
-  }
+<script src="assets/js/adicionais-admin.js"></script>
 
-  carregarAdicionais();
-}
-
-async function excluirAdicional(id) {
-  if (!confirm("Deseja excluir este adicional?")) return;
-
-  const { error } = await supabaseClient
-    .from("adicionais")
-    .delete()
-    .eq("id", id)
-    .eq("loja_id", lojaAtual);
-
-  if (error) {
-    alert("Erro ao excluir adicional.");
-    console.error(error);
-    return;
-  }
-
-  carregarAdicionais();
-}
-
-carregarLoja();
+</body>
+</html>
