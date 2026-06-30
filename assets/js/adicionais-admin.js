@@ -1,9 +1,11 @@
 const btnNovoAdicional = document.getElementById("btnNovoAdicional");
 const formAdicional = document.getElementById("formAdicional");
 const listaAdicionais = document.getElementById("listaAdicionais");
+const adicionalGrupo = document.getElementById("adicionalGrupo");
 
 let lojaAtual = null;
 let adicionaisCache = [];
+let gruposCache = [];
 let adicionalEditandoId = null;
 
 btnNovoAdicional.addEventListener("click", () => {
@@ -35,13 +37,46 @@ async function carregarLoja() {
   }
 
   lojaAtual = data.loja_id;
-  carregarAdicionais();
+
+  await carregarGrupos();
+  await carregarAdicionais();
+}
+
+async function carregarGrupos() {
+  const { data, error } = await supabaseClient
+    .from("grupos_adicionais")
+    .select("*")
+    .eq("loja_id", lojaAtual)
+    .eq("ativo", true)
+    .order("nome", { ascending: true });
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  gruposCache = data || [];
+
+  adicionalGrupo.innerHTML = `<option value="">Selecione um grupo</option>`;
+
+  gruposCache.forEach((grupo) => {
+    adicionalGrupo.innerHTML += `
+      <option value="${grupo.id}">
+        ${grupo.nome}
+      </option>
+    `;
+  });
 }
 
 async function carregarAdicionais() {
   const { data, error } = await supabaseClient
     .from("adicionais")
-    .select("*")
+    .select(`
+      *,
+      grupos_adicionais (
+        nome
+      )
+    `)
     .eq("loja_id", lojaAtual)
     .order("created_at", { ascending: false });
 
@@ -61,31 +96,36 @@ function renderizarAdicionais() {
     return;
   }
 
-  listaAdicionais.innerHTML = adicionaisCache.map((adicional) => `
-    <div class="produto-admin-item">
-      <div>
-        <strong>${adicional.nome}</strong>
-        <p>${adicional.descricao || ""}</p>
-        <span>R$ ${Number(adicional.preco).toFixed(2)}</span>
+  listaAdicionais.innerHTML = adicionaisCache.map((adicional) => {
+    const grupoNome = adicional.grupos_adicionais?.nome || "Sem grupo";
+
+    return `
+      <div class="produto-admin-item">
+        <div>
+          <strong>${adicional.nome}</strong>
+          <p>${adicional.descricao || ""}</p>
+          <p><small>Grupo: ${grupoNome}</small></p>
+          <span>R$ ${Number(adicional.preco).toFixed(2)}</span>
+        </div>
+
+        <div class="produto-acoes">
+          <span>${adicional.ativo ? "🟢 Ativo" : "🔴 Pausado"}</span>
+
+          <button onclick="editarAdicional('${adicional.id}')">
+            Editar
+          </button>
+
+          <button onclick="alternarAdicional('${adicional.id}', ${adicional.ativo})">
+            ${adicional.ativo ? "Pausar" : "Ativar"}
+          </button>
+
+          <button class="btn-excluir" onclick="excluirAdicional('${adicional.id}')">
+            Excluir
+          </button>
+        </div>
       </div>
-
-      <div class="produto-acoes">
-        <span>${adicional.ativo ? "🟢 Ativo" : "🔴 Pausado"}</span>
-
-        <button onclick="editarAdicional('${adicional.id}')">
-          Editar
-        </button>
-
-        <button onclick="alternarAdicional('${adicional.id}', ${adicional.ativo})">
-          ${adicional.ativo ? "Pausar" : "Ativar"}
-        </button>
-
-        <button class="btn-excluir" onclick="excluirAdicional('${adicional.id}')">
-          Excluir
-        </button>
-      </div>
-    </div>
-  `).join("");
+    `;
+  }).join("");
 }
 
 function editarAdicional(id) {
@@ -98,6 +138,7 @@ function editarAdicional(id) {
   document.getElementById("adicionalNome").value = adicional.nome;
   document.getElementById("adicionalDescricao").value = adicional.descricao || "";
   document.getElementById("adicionalPreco").value = adicional.preco;
+  adicionalGrupo.value = adicional.grupo_id || "";
 
   formAdicional.classList.remove("oculto");
 }
@@ -108,6 +149,7 @@ formAdicional.addEventListener("submit", async (e) => {
   const nome = document.getElementById("adicionalNome").value.trim();
   const descricao = document.getElementById("adicionalDescricao").value.trim();
   const preco = Number(document.getElementById("adicionalPreco").value);
+  const grupoId = adicionalGrupo.value || null;
 
   let error;
 
@@ -117,7 +159,8 @@ formAdicional.addEventListener("submit", async (e) => {
       .update({
         nome,
         descricao,
-        preco
+        preco,
+        grupo_id: grupoId
       })
       .eq("id", adicionalEditandoId)
       .eq("loja_id", lojaAtual);
@@ -128,10 +171,12 @@ formAdicional.addEventListener("submit", async (e) => {
       .from("adicionais")
       .insert({
         loja_id: lojaAtual,
+        grupo_id: grupoId,
         nome,
         descricao,
         preco,
-        ativo: true
+        ativo: true,
+        indisponivel: false
       });
 
     error = resposta.error;
