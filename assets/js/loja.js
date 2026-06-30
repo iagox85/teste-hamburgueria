@@ -29,9 +29,9 @@ async function carregarLoja() {
     .from("lojas")
     .select("*")
     .limit(1)
-    .single();
+    .maybeSingle();
 
-  if (error) {
+  if (error || !data) {
     console.error(error);
     nomeLoja.innerText = "Erro ao carregar loja";
     return;
