@@ -14,17 +14,7 @@
 
   <main class="content">
 
-    <header class="topbar">
-      <div>
-        <h1>Produtos</h1>
-        <p>Cadastre, edite e organize os produtos da sua loja.</p>
-      </div>
-
-      <div class="topbar-actions">
-        <button class="notification">🔔</button>
-        <button id="sair">Sair</button>
-      </div>
-    </header>
+    <header id="topbar" class="topbar"></header>
 
     <section class="panel">
       <div class="panel-header">
@@ -79,9 +69,13 @@
 <script src="assets/js/supabase.js"></script>
 <script src="assets/js/admin.js"></script>
 <script src="assets/js/sidebar.js"></script>
+<script src="assets/js/topbar.js"></script>
+
 <script>
   carregarSidebar("produtos");
+  carregarTopbar("Produtos", "Cadastre, edite e organize os produtos da sua loja.");
 </script>
+
 <script src="assets/js/produtos-admin.js"></script>
 
 </body>
