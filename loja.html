@@ -28,6 +28,32 @@
 
 </main>
 
+<div id="modalProduto" class="modal-produto oculto">
+  <div class="modal-produto-content">
+
+    <button id="fecharModalProduto" class="fechar-modal">×</button>
+
+    <h2 id="modalProdutoNome"></h2>
+    <p id="modalProdutoDescricao"></p>
+    <strong id="modalProdutoPreco"></strong>
+
+    <div id="modalProdutoGrupos"></div>
+
+    <textarea id="observacaoProduto" placeholder="Alguma observação? Ex: sem cebola"></textarea>
+
+    <div class="quantidade-box">
+      <button id="diminuirQuantidade">-</button>
+      <span id="quantidadeProduto">1</span>
+      <button id="aumentarQuantidade">+</button>
+    </div>
+
+    <button id="adicionarCarrinho" class="btn-adicionar-carrinho">
+      Adicionar ao carrinho
+    </button>
+
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="assets/js/config.js"></script>
 <script src="assets/js/supabase.js"></script>
