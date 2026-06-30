@@ -15,6 +15,7 @@ const quantidadeProduto = document.getElementById("quantidadeProduto");
 const diminuirQuantidade = document.getElementById("diminuirQuantidade");
 const aumentarQuantidade = document.getElementById("aumentarQuantidade");
 const adicionarCarrinho = document.getElementById("adicionarCarrinho");
+const totalProdutoModal = document.getElementById("totalProdutoModal");
 
 let lojaAtual = null;
 let categoriasCache = [];
@@ -173,6 +174,7 @@ function abrirProduto(produtoId) {
   observacaoProduto.value = "";
 
   renderizarGruposDoProduto(produto);
+  atualizarTotalProduto();
 
   modalProduto.classList.remove("oculto");
 }
@@ -211,8 +213,9 @@ function renderizarGruposDoProduto(produto) {
                 type="${grupo.maximo === 1 ? "radio" : "checkbox"}"
                 name="grupo-${grupo.id}"
                 value="${adicional.id}"
+                data-nome="${adicional.nome}"
                 data-preco="${adicional.preco}"
-                onchange="validarLimiteGrupo('${grupo.id}', ${grupo.maximo}, this)"
+                onchange="aoSelecionarAdicional('${grupo.id}', ${grupo.maximo}, this)"
               >
               ${adicional.nome}
             </div>
@@ -227,6 +230,11 @@ function renderizarGruposDoProduto(produto) {
   }).join("");
 }
 
+function aoSelecionarAdicional(grupoId, maximo, inputAtual) {
+  validarLimiteGrupo(grupoId, maximo, inputAtual);
+  atualizarTotalProduto();
+}
+
 function validarLimiteGrupo(grupoId, maximo, inputAtual) {
   if (!maximo || maximo <= 0) return;
 
@@ -238,6 +246,30 @@ function validarLimiteGrupo(grupoId, maximo, inputAtual) {
     inputAtual.checked = false;
     alert(`Você pode escolher no máximo ${maximo} opção(ões) nesse grupo.`);
   }
+}
+
+function calcularAdicionaisSelecionados() {
+  const selecionados = document.querySelectorAll(
+    "#modalProdutoGrupos input:checked"
+  );
+
+  let totalAdicionais = 0;
+
+  selecionados.forEach((input) => {
+    totalAdicionais += Number(input.dataset.preco || 0);
+  });
+
+  return totalAdicionais;
+}
+
+function atualizarTotalProduto() {
+  if (!produtoAtual) return;
+
+  const precoProduto = Number(produtoAtual.preco || 0);
+  const totalAdicionais = calcularAdicionaisSelecionados();
+  const total = (precoProduto + totalAdicionais) * quantidadeAtual;
+
+  totalProdutoModal.innerText = `R$ ${total.toFixed(2)}`;
 }
 
 function validarMinimosAntesDeAdicionar() {
@@ -278,12 +310,14 @@ diminuirQuantidade.addEventListener("click", () => {
   if (quantidadeAtual > 1) {
     quantidadeAtual--;
     quantidadeProduto.innerText = quantidadeAtual;
+    atualizarTotalProduto();
   }
 });
 
 aumentarQuantidade.addEventListener("click", () => {
   quantidadeAtual++;
   quantidadeProduto.innerText = quantidadeAtual;
+  atualizarTotalProduto();
 });
 
 adicionarCarrinho.addEventListener("click", () => {
