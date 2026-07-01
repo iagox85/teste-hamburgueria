@@ -1,48 +1,203 @@
 // ============================================================
 // DELIVERYOS - NOTIFICAÇÕES GLOBAIS DE PEDIDOS
 // ------------------------------------------------------------
-// Comportamento correto:
+// - Som sempre ativo por padrão no painel inteiro.
 // - Sem botão de ativar/desativar som.
-// - Som sempre ativo por padrão no painel.
 // - Funciona em Pedidos, Produtos, Configurações, Relatórios etc.
-// - Ao aceitar/cancelar/atualizar o pedido para outro status, para em todas as abas.
-// - Mantém um único áudio ativo por pedido para evitar várias abas tocando juntas.
+// - No celular/navegador, desbloqueia o áudio no primeiro toque/clique.
+// - Ao aceitar/cancelar pedido em Pedidos, para o alerta em todas as abas.
 // ============================================================
 
 (function () {
   if (window.DeliveryOSPedidosNotifier) return;
 
-  const paginaAtual = (window.location.pathname || "").split("/").pop().toLowerCase();
-  const estaNaPaginaPedidos = paginaAtual === "pedidos.html";
-
-  const CANAL_BROADCAST = "deliveryos_pedidos";
+  const CANAL_ABAS = "deliveryos_pedidos";
   const PEDIDO_RESOLVIDO_KEY = "deliveryos_pedido_notificacao_resolvida";
-  const PEDIDO_ATIVO_KEY = "deliveryos_pedido_notificacao_ativa";
   const AUDIO_DESBLOQUEADO_KEY = "deliveryos_audio_pedidos_desbloqueado";
-  const AUDIO_LOCK_KEY = "deliveryos_pedido_audio_lock";
-
-  const TAB_ID = `${Date.now()}-${Math.random().toString(16).slice(2)}`;
-  const TEMPO_LOCK_AUDIO = 4500;
-  const TEMPO_PEDIDO_ATIVO = 1000 * 60 * 60;
+  const ULTIMO_PEDIDO_NOTIFICADO_KEY = "deliveryos_ultimo_pedido_notificado";
 
   let canalPedidosGlobal = null;
-  let broadcastChannel = null;
   let lojaIdAtual = null;
   let intervaloSom = null;
   let intervaloTitulo = null;
   let tituloOriginal = document.title;
   let ultimoPedidoNotificado = null;
-  let pedidoAtualNotificando = null;
   let audioContext = null;
   let audioDesbloqueado = false;
+  let broadcastChannel = null;
+  let pedidoAtualNotificando = null;
+  let pedidoAtualDados = null;
 
   function normalizarTexto(valor) {
     return String(valor || "").trim();
   }
 
-  function statusAindaNovo(status) {
-    const valor = normalizarTexto(status).toLowerCase();
-    return valor === "novo" || valor === "novo_pedido" || valor === "pendente" || valor === "recebido" || valor === "";
+  function somSempreAtivo() {
+    return true;
+  }
+
+  function obterPedidoResolvidoSalvo() {
+    try {
+      const bruto = localStorage.getItem(PEDIDO_RESOLVIDO_KEY);
+      return bruto ? JSON.parse(bruto) : null;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function pedidoFoiResolvidoOuSilenciado(pedidoId) {
+    const resolvido = obterPedidoResolvidoSalvo();
+    return Boolean(resolvido?.pedido_id && pedidoId && String(resolvido.pedido_id) === String(pedidoId));
+  }
+
+  function marcarAudioDesbloqueado() {
+    audioDesbloqueado = true;
+    try {
+      localStorage.setItem(AUDIO_DESBLOQUEADO_KEY, "sim");
+    } catch (error) {
+      // ignora
+    }
+    ocultarAvisoAudio();
+  }
+
+  function audioJaFoiDesbloqueado() {
+    try {
+      return localStorage.getItem(AUDIO_DESBLOQUEADO_KEY) === "sim";
+    } catch (error) {
+      return false;
+    }
+  }
+
+  function obterAudioContext() {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) return null;
+
+    if (!audioContext) {
+      audioContext = new AudioContextClass();
+    }
+
+    return audioContext;
+  }
+
+  function mostrarAvisoAudio() {
+    if (!somSempreAtivo()) return;
+    if (audioDesbloqueado) return;
+    if (document.getElementById("deliveryosAvisoAudioPedidos")) return;
+
+    const aviso = document.createElement("div");
+    aviso.id = "deliveryosAvisoAudioPedidos";
+    aviso.className = "deliveryos-audio-pedidos-aviso";
+    aviso.innerHTML = `
+      <span>🔔</span>
+      <div>
+        <strong>Alertas de pedidos ativos</strong>
+        <small>Toque ou clique na tela para liberar o som neste dispositivo.</small>
+      </div>
+    `;
+    document.body.appendChild(aviso);
+  }
+
+  function ocultarAvisoAudio() {
+    const aviso = document.getElementById("deliveryosAvisoAudioPedidos");
+    if (aviso) aviso.remove();
+  }
+
+  async function tentarDesbloquearAudio() {
+    if (!somSempreAtivo()) return false;
+
+    try {
+      const ctx = obterAudioContext();
+      if (!ctx) return false;
+
+      if (ctx.state === "suspended") {
+        await ctx.resume();
+      }
+
+      const oscilador = ctx.createOscillator();
+      const ganho = ctx.createGain();
+
+      ganho.gain.setValueAtTime(0.0001, ctx.currentTime);
+      oscilador.connect(ganho);
+      ganho.connect(ctx.destination);
+      oscilador.start();
+      oscilador.stop(ctx.currentTime + 0.02);
+
+      marcarAudioDesbloqueado();
+      return true;
+    } catch (error) {
+      mostrarAvisoAudio();
+      return false;
+    }
+  }
+
+  async function tocarSomPedido() {
+    if (!somSempreAtivo()) return false;
+
+    try {
+      const ctx = obterAudioContext();
+      if (!ctx) return false;
+
+      if (ctx.state === "suspended") {
+        await ctx.resume();
+      }
+
+      if (ctx.state !== "running") {
+        mostrarAvisoAudio();
+        return false;
+      }
+
+      const agora = ctx.currentTime;
+
+      function nota(frequencia, inicio, duracao, volume) {
+        const oscilador = ctx.createOscillator();
+        const ganho = ctx.createGain();
+
+        oscilador.type = "sine";
+        oscilador.frequency.setValueAtTime(frequencia, agora + inicio);
+
+        ganho.gain.setValueAtTime(0.001, agora + inicio);
+        ganho.gain.exponentialRampToValueAtTime(volume, agora + inicio + 0.03);
+        ganho.gain.exponentialRampToValueAtTime(0.001, agora + inicio + duracao);
+
+        oscilador.connect(ganho);
+        ganho.connect(ctx.destination);
+
+        oscilador.start(agora + inicio);
+        oscilador.stop(agora + inicio + duracao);
+      }
+
+      nota(784, 0.00, 0.28, 0.25);
+      nota(1046, 0.18, 0.34, 0.27);
+      nota(784, 0.58, 0.28, 0.23);
+      nota(1046, 0.76, 0.38, 0.25);
+
+      marcarAudioDesbloqueado();
+      return true;
+    } catch (error) {
+      console.warn("DeliveryOS: o navegador bloqueou o áudio até uma interação do usuário.", error);
+      mostrarAvisoAudio();
+      return false;
+    }
+  }
+
+  async function iniciarSomContinuo() {
+    if (!somSempreAtivo()) return;
+
+    pararSomContinuo();
+
+    const tocou = await tocarSomPedido();
+    if (!tocou) mostrarAvisoAudio();
+
+    intervaloSom = setInterval(() => {
+      tocarSomPedido();
+    }, 2200);
+  }
+
+  function pararSomContinuo() {
+    if (intervaloSom) {
+      clearInterval(intervaloSom);
+      intervaloSom = null;
+    }
   }
 
   function formatarMoeda(valor) {
@@ -66,185 +221,6 @@
     return pedido?.total ?? pedido?.valor_total ?? pedido?.total_pedido ?? 0;
   }
 
-  function salvarJSON(chave, valor) {
-    try {
-      localStorage.setItem(chave, JSON.stringify(valor));
-    } catch (error) {
-      // ignora
-    }
-  }
-
-  function lerJSON(chave) {
-    try {
-      const valor = localStorage.getItem(chave);
-      return valor ? JSON.parse(valor) : null;
-    } catch (error) {
-      return null;
-    }
-  }
-
-  function removerStorage(chave) {
-    try {
-      localStorage.removeItem(chave);
-    } catch (error) {
-      // ignora
-    }
-  }
-
-  function obterAudioContext() {
-    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-    if (!AudioContextClass) return null;
-
-    if (!audioContext) {
-      audioContext = new AudioContextClass();
-    }
-
-    return audioContext;
-  }
-
-  function marcarAudioDesbloqueado() {
-    audioDesbloqueado = true;
-    try {
-      localStorage.setItem(AUDIO_DESBLOQUEADO_KEY, "sim");
-    } catch (error) {
-      // ignora
-    }
-  }
-
-  function tentarDesbloquearAudio() {
-    try {
-      const ctx = obterAudioContext();
-      if (!ctx) return false;
-
-      if (ctx.state === "suspended") {
-        ctx.resume().catch(() => {});
-      }
-
-      const oscilador = ctx.createOscillator();
-      const ganho = ctx.createGain();
-
-      ganho.gain.setValueAtTime(0.0001, ctx.currentTime);
-      oscilador.connect(ganho);
-      ganho.connect(ctx.destination);
-      oscilador.start();
-      oscilador.stop(ctx.currentTime + 0.02);
-
-      marcarAudioDesbloqueado();
-      return true;
-    } catch (error) {
-      return false;
-    }
-  }
-
-  function instalarDesbloqueioAutomatico() {
-    const eventos = ["pointerdown", "keydown", "touchstart", "click"];
-
-    const liberar = () => {
-      tentarDesbloquearAudio();
-
-      if (pedidoAtualNotificando) {
-        iniciarSomContinuo();
-      }
-    };
-
-    eventos.forEach((evento) => {
-      window.addEventListener(evento, liberar, { passive: true });
-    });
-  }
-
-  function adquirirLockAudio(pedidoId) {
-    const agora = Date.now();
-    const lockAtual = lerJSON(AUDIO_LOCK_KEY);
-
-    if (
-      lockAtual &&
-      lockAtual.pedido_id === pedidoId &&
-      lockAtual.tab_id !== TAB_ID &&
-      Number(lockAtual.expires_at || 0) > agora
-    ) {
-      return false;
-    }
-
-    salvarJSON(AUDIO_LOCK_KEY, {
-      pedido_id: pedidoId,
-      tab_id: TAB_ID,
-      expires_at: agora + TEMPO_LOCK_AUDIO
-    });
-
-    return true;
-  }
-
-  function liberarLockAudio(pedidoId = null) {
-    const lockAtual = lerJSON(AUDIO_LOCK_KEY);
-    if (!lockAtual) return;
-
-    if (lockAtual.tab_id === TAB_ID || !pedidoId || lockAtual.pedido_id === pedidoId) {
-      removerStorage(AUDIO_LOCK_KEY);
-    }
-  }
-
-  function tocarSomPedido() {
-    if (!pedidoAtualNotificando) return;
-    if (!adquirirLockAudio(pedidoAtualNotificando)) return;
-
-    try {
-      const ctx = obterAudioContext();
-      if (!ctx) return;
-
-      if (ctx.state === "suspended") {
-        ctx.resume().catch(() => {});
-      }
-
-      const agora = ctx.currentTime;
-
-      function nota(frequencia, inicio, duracao, volume) {
-        const oscilador = ctx.createOscillator();
-        const ganho = ctx.createGain();
-
-        oscilador.type = "sine";
-        oscilador.frequency.setValueAtTime(frequencia, agora + inicio);
-
-        ganho.gain.setValueAtTime(0.001, agora + inicio);
-        ganho.gain.exponentialRampToValueAtTime(volume, agora + inicio + 0.03);
-        ganho.gain.exponentialRampToValueAtTime(0.001, agora + inicio + duracao);
-
-        oscilador.connect(ganho);
-        ganho.connect(ctx.destination);
-
-        oscilador.start(agora + inicio);
-        oscilador.stop(agora + inicio + duracao);
-      }
-
-      nota(784, 0.00, 0.28, 0.24);
-      nota(1046, 0.18, 0.34, 0.26);
-      nota(784, 0.58, 0.28, 0.22);
-      nota(1046, 0.76, 0.38, 0.24);
-
-      marcarAudioDesbloqueado();
-    } catch (error) {
-      console.warn("DeliveryOS: não foi possível tocar o som de novo pedido.", error);
-    }
-  }
-
-  function iniciarSomContinuo() {
-    pararSomContinuo();
-    tentarDesbloquearAudio();
-    tocarSomPedido();
-
-    intervaloSom = setInterval(() => {
-      tocarSomPedido();
-    }, 2200);
-  }
-
-  function pararSomContinuo() {
-    if (intervaloSom) {
-      clearInterval(intervaloSom);
-      intervaloSom = null;
-    }
-
-    liberarLockAudio(pedidoAtualNotificando);
-  }
-
   function iniciarPiscarTitulo() {
     pararPiscarTitulo();
     let alternar = false;
@@ -264,16 +240,7 @@
     document.title = tituloOriginal;
   }
 
-  function mostrarAlertaNaPaginaPedidos(pedido) {
-    const alerta = document.getElementById("alertaPedidoNovo");
-    if (!alerta) return false;
-
-    alerta.innerHTML = `🔔 Novo pedido recebido de <strong>${obterNomeCliente(pedido)}</strong>. Clique em Aceitar ou Cancelar para parar o som.`;
-    alerta.classList.remove("oculto");
-    return true;
-  }
-
-  function criarAlertaFlutuante() {
+  function criarAlertaVisual() {
     let alerta = document.getElementById("deliveryosPedidoGlobalAlert");
 
     if (!alerta) {
@@ -294,6 +261,7 @@
       document.body.appendChild(alerta);
 
       alerta.querySelector("#deliveryosBtnVerPedidoGlobal")?.addEventListener("click", () => {
+        pararNotificacaoGlobal(true, pedidoAtualNotificando);
         window.location.href = "pedidos.html";
       });
 
@@ -306,29 +274,29 @@
   }
 
   function mostrarAlertaVisual(pedido) {
-    if (estaNaPaginaPedidos && mostrarAlertaNaPaginaPedidos(pedido)) return;
-
-    const alerta = criarAlertaFlutuante();
+    const alerta = criarAlertaVisual();
     const texto = alerta.querySelector("#deliveryosPedidoGlobalTexto");
+    const cliente = obterNomeCliente(pedido);
+    const total = obterTotalPedido(pedido);
 
     if (texto) {
-      texto.textContent = `${obterNomeCliente(pedido)} • ${formatarMoeda(obterTotalPedido(pedido))} • clique em Ver pedidos para aceitar.`;
+      texto.textContent = `${cliente} • ${formatarMoeda(total)} • clique em Ver pedidos para aceitar.`;
     }
 
     alerta.classList.remove("oculto");
   }
 
   function ocultarAlertaVisual() {
-    const alertaFlutuante = document.getElementById("deliveryosPedidoGlobalAlert");
-    if (alertaFlutuante) alertaFlutuante.classList.add("oculto");
-
-    const alertaPedidos = document.getElementById("alertaPedidoNovo");
-    if (alertaPedidos) alertaPedidos.classList.add("oculto");
+    const alerta = document.getElementById("deliveryosPedidoGlobalAlert");
+    if (alerta) alerta.classList.add("oculto");
   }
 
   function mostrarToastPedido(pedido) {
+    const cliente = obterNomeCliente(pedido);
+    const total = obterTotalPedido(pedido);
+
     if (typeof window.showToast === "function") {
-      window.showToast(`${obterNomeCliente(pedido)} • ${formatarMoeda(obterTotalPedido(pedido))}`, "warning", {
+      window.showToast(`${cliente} • ${formatarMoeda(total)}. Abra Pedidos para aceitar.`, "warning", {
         titulo: "Novo pedido recebido",
         duracao: 9000
       });
@@ -339,11 +307,15 @@
     const payload = {
       tipo: "pedido_resolvido",
       pedido_id: pedidoId,
-      origem: paginaAtual || "painel",
+      origem: (window.location.pathname || "painel").split("/").pop() || "painel",
       timestamp: Date.now()
     };
 
-    salvarJSON(PEDIDO_RESOLVIDO_KEY, payload);
+    try {
+      localStorage.setItem(PEDIDO_RESOLVIDO_KEY, JSON.stringify(payload));
+    } catch (error) {
+      // ignora
+    }
 
     try {
       if (broadcastChannel) broadcastChannel.postMessage(payload);
@@ -352,47 +324,40 @@
     }
   }
 
-  function salvarPedidoAtivo(pedido) {
-    if (!pedido?.id) return;
-
-    salvarJSON(PEDIDO_ATIVO_KEY, {
-      pedido_id: pedido.id,
-      loja_id: pedido.loja_id || lojaIdAtual,
-      cliente: obterNomeCliente(pedido),
-      total: obterTotalPedido(pedido),
-      criado_em: Date.now()
-    });
-  }
-
-  function limparPedidoAtivo(pedidoId = null) {
-    const ativo = lerJSON(PEDIDO_ATIVO_KEY);
-    if (!ativo) return;
-
-    if (!pedidoId || ativo.pedido_id === pedidoId) {
-      removerStorage(PEDIDO_ATIVO_KEY);
-    }
-  }
-
   function pararNotificacaoGlobal(publicar = false, pedidoId = null) {
     pararSomContinuo();
     pararPiscarTitulo();
     ocultarAlertaVisual();
-    limparPedidoAtivo(pedidoId || pedidoAtualNotificando);
-    liberarLockAudio(pedidoId || pedidoAtualNotificando);
     pedidoAtualNotificando = null;
+    pedidoAtualDados = null;
 
     if (publicar) publicarPedidoResolvido(pedidoId);
   }
 
-  function notificarNovoPedido(pedido, forcar = false) {
+  function statusAindaNovo(status) {
+    const valor = normalizarTexto(status).toLowerCase();
+    return valor === "novo" || valor === "novo_pedido" || valor === "pendente" || valor === "recebido" || valor === "";
+  }
+
+  function salvarUltimoPedidoNotificado(pedidoId) {
+    try {
+      localStorage.setItem(ULTIMO_PEDIDO_NOTIFICADO_KEY, String(pedidoId || ""));
+    } catch (error) {
+      // ignora
+    }
+  }
+
+  function notificarNovoPedido(pedido, origem = "realtime") {
     if (!pedido?.id) return;
-    if (!forcar && pedido.id === ultimoPedidoNotificado) return;
     if (!statusAindaNovo(pedido.status)) return;
+    if (pedidoFoiResolvidoOuSilenciado(pedido.id)) return;
+    if (pedido.id === ultimoPedidoNotificado && pedidoAtualNotificando === pedido.id) return;
 
     ultimoPedidoNotificado = pedido.id;
     pedidoAtualNotificando = pedido.id;
+    pedidoAtualDados = pedido;
+    salvarUltimoPedidoNotificado(pedido.id);
 
-    salvarPedidoAtivo(pedido);
     mostrarToastPedido(pedido);
     mostrarAlertaVisual(pedido);
     iniciarPiscarTitulo();
@@ -407,6 +372,10 @@
       } catch (error) {
         // ignora
       }
+    }
+
+    if (origem === "inicial" && !audioDesbloqueado) {
+      mostrarAvisoAudio();
     }
   }
 
@@ -432,28 +401,22 @@
     return lojaIdAtual;
   }
 
-  async function restaurarPedidoAtivoSeExistir() {
-    const ativo = lerJSON(PEDIDO_ATIVO_KEY);
-    if (!ativo?.pedido_id || ativo.loja_id !== lojaIdAtual) return;
+  async function verificarPedidoPendenteInicial() {
+    if (!lojaIdAtual || !window.supabaseClient) return;
 
-    if (Date.now() - Number(ativo.criado_em || 0) > TEMPO_PEDIDO_ATIVO) {
-      limparPedidoAtivo(ativo.pedido_id);
-      return;
-    }
-
-    const { data: pedido, error } = await supabaseClient
+    const { data, error } = await supabaseClient
       .from("pedidos")
       .select("*")
-      .eq("id", ativo.pedido_id)
       .eq("loja_id", lojaIdAtual)
-      .maybeSingle();
+      .eq("status", "novo")
+      .order("created_at", { ascending: false })
+      .limit(1);
 
-    if (error || !pedido || !statusAindaNovo(pedido.status)) {
-      pararNotificacaoGlobal(false, ativo.pedido_id);
-      return;
-    }
+    if (error || !Array.isArray(data) || !data.length) return;
 
-    notificarNovoPedido(pedido, true);
+    const pedido = data[0];
+    if (!pedido?.id) return;
+    notificarNovoPedido(pedido, "inicial");
   }
 
   async function iniciarRealtimeGlobal() {
@@ -465,7 +428,7 @@
     }
 
     canalPedidosGlobal = supabaseClient
-      .channel(`deliveryos-pedidos-notificacoes-${lojaId}`)
+      .channel(`deliveryos-pedidos-global-${lojaId}-${Date.now()}`)
       .on(
         "postgres_changes",
         {
@@ -480,13 +443,12 @@
 
           if (payload.eventType === "INSERT") {
             if (!pedidoNovo || pedidoNovo.loja_id !== lojaIdAtual) return;
-            notificarNovoPedido(pedidoNovo);
+            notificarNovoPedido(pedidoNovo, "realtime");
             return;
           }
 
           if (payload.eventType === "UPDATE") {
             if (!pedidoNovo || pedidoNovo.loja_id !== lojaIdAtual) return;
-
             if (pedidoAtualNotificando && pedidoNovo.id === pedidoAtualNotificando && !statusAindaNovo(pedidoNovo.status)) {
               pararNotificacaoGlobal(true, pedidoNovo.id);
             }
@@ -501,54 +463,49 @@
         }
       )
       .subscribe((status) => {
-        console.log("DeliveryOS notificações de pedidos:", status);
+        console.log("DeliveryOS notificações globais de pedidos:", status);
       });
 
-    await restaurarPedidoAtivoSeExistir();
+    verificarPedidoPendenteInicial();
+  }
+
+  function pedirPermissaoNotificacaoDepoisDeInteracao() {
+    tentarDesbloquearAudio();
+
+    if (!("Notification" in window)) return;
+    if (Notification.permission !== "default") return;
+
+    const jaPerguntou = localStorage.getItem("deliveryos_notificacao_browser_perguntou");
+    if (jaPerguntou === "sim") return;
+
+    localStorage.setItem("deliveryos_notificacao_browser_perguntou", "sim");
+    Notification.requestPermission().catch(() => {});
   }
 
   function configurarEventosGlobais() {
-    instalarDesbloqueioAutomatico();
-
-    if ("Notification" in window && Notification.permission === "default") {
-      window.addEventListener(
-        "click",
-        () => {
-          const jaPerguntou = localStorage.getItem("deliveryos_notificacao_browser_perguntou");
-          if (jaPerguntou === "sim") return;
-
-          localStorage.setItem("deliveryos_notificacao_browser_perguntou", "sim");
-          Notification.requestPermission().catch(() => {});
-        },
-        { once: true, passive: true }
-      );
-    }
+    ["pointerdown", "keydown", "touchstart", "click"].forEach((evento) => {
+      window.addEventListener(evento, pedirPermissaoNotificacaoDepoisDeInteracao, { passive: true });
+    });
 
     window.addEventListener("storage", (event) => {
       if (event.key === PEDIDO_RESOLVIDO_KEY) {
-        const payload = lerJSON(PEDIDO_RESOLVIDO_KEY);
-        pararNotificacaoGlobal(false, payload?.pedido_id || null);
-      }
-
-      if (event.key === PEDIDO_ATIVO_KEY && event.newValue && !pedidoAtualNotificando) {
-        const ativo = lerJSON(PEDIDO_ATIVO_KEY);
-        if (ativo?.loja_id === lojaIdAtual) {
-          restaurarPedidoAtivoSeExistir();
-        }
+        pararNotificacaoGlobal(false);
       }
     });
 
-    window.addEventListener("beforeunload", () => {
-      liberarLockAudio(pedidoAtualNotificando);
+    window.addEventListener("visibilitychange", () => {
+      if (!document.hidden && pedidoAtualDados && pedidoAtualNotificando) {
+        tocarSomPedido();
+      }
     });
   }
 
   function configurarBroadcast() {
     try {
-      broadcastChannel = new BroadcastChannel(CANAL_BROADCAST);
+      broadcastChannel = new BroadcastChannel(CANAL_ABAS);
       broadcastChannel.onmessage = (event) => {
         if (event?.data?.tipo === "pedido_resolvido") {
-          pararNotificacaoGlobal(false, event.data.pedido_id || null);
+          pararNotificacaoGlobal(false);
         }
       };
     } catch (error) {
@@ -560,18 +517,18 @@
     iniciar: iniciarRealtimeGlobal,
     parar: pararNotificacaoGlobal,
     publicarPedidoResolvido,
+    notificarNovoPedido,
     desbloquearAudio: tentarDesbloquearAudio
   };
 
   document.addEventListener("DOMContentLoaded", () => {
-    try {
-      audioDesbloqueado = localStorage.getItem(AUDIO_DESBLOQUEADO_KEY) === "sim";
-    } catch (error) {
-      audioDesbloqueado = false;
-    }
-
+    audioDesbloqueado = audioJaFoiDesbloqueado();
     configurarBroadcast();
     configurarEventosGlobais();
     iniciarRealtimeGlobal();
+
+    setTimeout(() => {
+      if (!audioDesbloqueado) mostrarAvisoAudio();
+    }, 900);
   });
 })();
