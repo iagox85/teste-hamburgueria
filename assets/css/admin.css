@@ -1,27 +1,11 @@
-:root {
-  --primary: #ef4444;
-  --primary-dark: #dc2626;
-  --primary-soft: #fff1f2;
-  --dark: #0f172a;
-  --dark-2: #111827;
-  --bg: #f6f7fb;
-  --card: #ffffff;
-  --text: #0f172a;
-  --muted: #64748b;
-  --muted-2: #94a3b8;
-  --border: #e5e7eb;
-  --border-strong: #d8dee8;
-  --danger-bg: #fee2e2;
-  --danger: #b91c1c;
-  --success-bg: #dcfce7;
-  --success: #166534;
-  --warning-bg: #fef3c7;
-  --warning: #92400e;
-  --radius: 18px;
-  --radius-lg: 24px;
-  --shadow: 0 14px 35px rgba(15, 23, 42, 0.07);
-  --shadow-soft: 0 8px 22px rgba(15, 23, 42, 0.05);
-}
+@import url("./deliveryos-design-system.css");
+
+/* ============================================================
+   DeliveryOS Admin CSS
+   O visual permanece o mesmo. Os tokens oficiais agora ficam em
+   deliveryos-design-system.css.
+   ============================================================ */
+
 
 * {
   margin: 0;

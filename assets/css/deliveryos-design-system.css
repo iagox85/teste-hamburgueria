@@ -1,0 +1,321 @@
+/* ============================================================
+   DeliveryOS Design System v0.1
+   Base visual oficial do painel administrativo.
+
+   Objetivo desta etapa:
+   - Centralizar cores, espaçamentos, bordas, sombras e tipografia.
+   - Manter a identidade visual atual do DeliveryOS.
+   - Preparar componentes reutilizáveis sem alterar o layout existente.
+   ============================================================ */
+
+:root {
+  /* ==========================================================
+     CORES PRINCIPAIS
+     ========================================================== */
+  --dos-color-primary: #ef4444;
+  --dos-color-primary-hover: #dc2626;
+  --dos-color-primary-soft: #fff1f2;
+  --dos-color-primary-strong: #f43f5e;
+
+  --dos-color-dark: #0f172a;
+  --dos-color-dark-2: #111827;
+
+  --dos-color-bg: #f6f7fb;
+  --dos-color-bg-soft: #fafbff;
+  --dos-color-surface: #ffffff;
+  --dos-color-surface-soft: #f8fafc;
+
+  --dos-color-text: #0f172a;
+  --dos-color-text-soft: #334155;
+  --dos-color-muted: #64748b;
+  --dos-color-muted-2: #94a3b8;
+
+  --dos-color-border: #e5e7eb;
+  --dos-color-border-strong: #d8dee8;
+
+  /* ==========================================================
+     ESTADOS
+     ========================================================== */
+  --dos-color-success: #166534;
+  --dos-color-success-soft: #dcfce7;
+  --dos-color-success-action: #10b981;
+
+  --dos-color-danger: #b91c1c;
+  --dos-color-danger-soft: #fee2e2;
+  --dos-color-danger-action: #ef4444;
+
+  --dos-color-warning: #92400e;
+  --dos-color-warning-soft: #fef3c7;
+
+  --dos-color-info: #0369a1;
+  --dos-color-info-soft: #e0f2fe;
+
+  /* ==========================================================
+     TIPOGRAFIA
+     ========================================================== */
+  --dos-font-family: Inter, Arial, sans-serif;
+
+  --dos-font-xs: 11px;
+  --dos-font-sm: 12px;
+  --dos-font-md: 14px;
+  --dos-font-base: 15px;
+  --dos-font-lg: 18px;
+  --dos-font-xl: 22px;
+  --dos-font-2xl: 28px;
+  --dos-font-3xl: 38px;
+
+  --dos-font-medium: 700;
+  --dos-font-bold: 800;
+  --dos-font-black: 900;
+  --dos-font-ultra: 950;
+
+  --dos-letter-tight: -0.03em;
+  --dos-letter-tighter: -0.04em;
+
+  /* ==========================================================
+     ESPAÇAMENTOS
+     ========================================================== */
+  --dos-space-1: 4px;
+  --dos-space-2: 8px;
+  --dos-space-3: 12px;
+  --dos-space-4: 16px;
+  --dos-space-5: 20px;
+  --dos-space-6: 24px;
+  --dos-space-7: 28px;
+  --dos-space-8: 32px;
+  --dos-space-9: 36px;
+  --dos-space-10: 42px;
+
+  /* ==========================================================
+     BORDAS / RADIUS
+     ========================================================== */
+  --dos-radius-xs: 8px;
+  --dos-radius-sm: 10px;
+  --dos-radius-md: 13px;
+  --dos-radius-lg: 14px;
+  --dos-radius-xl: 18px;
+  --dos-radius-2xl: 22px;
+  --dos-radius-3xl: 24px;
+  --dos-radius-4xl: 28px;
+  --dos-radius-pill: 999px;
+
+  /* ==========================================================
+     SOMBRAS
+     ========================================================== */
+  --dos-shadow-xs: 0 8px 22px rgba(15, 23, 42, 0.025);
+  --dos-shadow-sm: 0 8px 22px rgba(15, 23, 42, 0.05);
+  --dos-shadow-md: 0 14px 35px rgba(15, 23, 42, 0.07);
+  --dos-shadow-lg: 0 18px 42px rgba(15, 23, 42, 0.16);
+  --dos-shadow-xl: 0 24px 80px rgba(15, 23, 42, 0.24);
+
+  --dos-shadow-primary: 0 12px 24px rgba(239, 68, 68, 0.18);
+  --dos-shadow-primary-strong: 0 14px 28px rgba(239, 68, 68, 0.28);
+
+  /* ==========================================================
+     TRANSIÇÕES
+     ========================================================== */
+  --dos-transition-fast: 0.16s ease;
+  --dos-transition-base: 0.18s ease;
+  --dos-transition-slow: 0.28s ease;
+
+  /* ==========================================================
+     Z-INDEX
+     ========================================================== */
+  --dos-z-modal: 9999;
+  --dos-z-toast: 99999;
+  --dos-z-notification: 99998;
+}
+
+/* ============================================================
+   COMPATIBILIDADE COM O CSS ATUAL
+   Mantém os nomes antigos funcionando enquanto migramos as telas.
+   ============================================================ */
+:root {
+  --primary: var(--dos-color-primary);
+  --primary-dark: var(--dos-color-primary-hover);
+  --primary-soft: var(--dos-color-primary-soft);
+
+  --dark: var(--dos-color-dark);
+  --dark-2: var(--dos-color-dark-2);
+  --bg: var(--dos-color-bg);
+  --card: var(--dos-color-surface);
+  --text: var(--dos-color-text);
+  --muted: var(--dos-color-muted);
+  --muted-2: var(--dos-color-muted-2);
+  --border: var(--dos-color-border);
+  --border-strong: var(--dos-color-border-strong);
+
+  --danger-bg: var(--dos-color-danger-soft);
+  --danger: var(--dos-color-danger);
+  --success-bg: var(--dos-color-success-soft);
+  --success: var(--dos-color-success);
+  --warning-bg: var(--dos-color-warning-soft);
+  --warning: var(--dos-color-warning);
+
+  --radius: var(--dos-radius-xl);
+  --radius-lg: var(--dos-radius-3xl);
+  --shadow: var(--dos-shadow-md);
+  --shadow-soft: var(--dos-shadow-sm);
+}
+
+/* ============================================================
+   CLASSES UTILITÁRIAS E COMPONENTES BASE
+   Estas classes serão usadas nas próximas migrações de telas.
+   Não alteram o visual atual sozinhas.
+   ============================================================ */
+.dos-card {
+  background: var(--dos-color-surface);
+  border: 1px solid var(--dos-color-border);
+  border-radius: var(--dos-radius-xl);
+  box-shadow: var(--dos-shadow-sm);
+}
+
+.dos-card-lg {
+  border-radius: var(--dos-radius-3xl);
+  box-shadow: var(--dos-shadow-md);
+}
+
+.dos-btn {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--dos-space-2);
+  border: 0;
+  border-radius: var(--dos-radius-lg);
+  padding: 0 var(--dos-space-4);
+  font-family: var(--dos-font-family);
+  font-size: var(--dos-font-md);
+  font-weight: var(--dos-font-black);
+  line-height: 1;
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform var(--dos-transition-base), box-shadow var(--dos-transition-base), background var(--dos-transition-base), border-color var(--dos-transition-base);
+}
+
+.dos-btn:hover {
+  transform: translateY(-1px);
+}
+
+.dos-btn-primary {
+  background: linear-gradient(135deg, var(--dos-color-primary), var(--dos-color-primary-strong));
+  color: #ffffff;
+  box-shadow: var(--dos-shadow-primary);
+}
+
+.dos-btn-primary:hover {
+  background: linear-gradient(135deg, var(--dos-color-primary-hover), var(--dos-color-primary));
+}
+
+.dos-btn-secondary {
+  background: var(--dos-color-surface);
+  color: var(--dos-color-text);
+  border: 1px solid var(--dos-color-border);
+  box-shadow: var(--dos-shadow-sm);
+}
+
+.dos-btn-success {
+  background: var(--dos-color-success-action);
+  color: #ffffff;
+}
+
+.dos-input,
+.dos-select,
+.dos-textarea {
+  width: 100%;
+  min-height: 46px;
+  padding: 12px 14px;
+  border: 1px solid #d9e1ec;
+  border-radius: var(--dos-radius-md);
+  outline: none;
+  background: var(--dos-color-surface);
+  color: var(--dos-color-text);
+  font-family: var(--dos-font-family);
+  transition: border-color var(--dos-transition-fast), box-shadow var(--dos-transition-fast), background var(--dos-transition-fast);
+}
+
+.dos-textarea {
+  min-height: 92px;
+  resize: vertical;
+}
+
+.dos-input:focus,
+.dos-select:focus,
+.dos-textarea:focus {
+  border-color: rgba(239, 68, 68, 0.62);
+  box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.10);
+}
+
+.dos-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--dos-space-2);
+  min-height: 26px;
+  padding: 0 10px;
+  border-radius: var(--dos-radius-pill);
+  font-size: var(--dos-font-sm);
+  font-weight: var(--dos-font-ultra);
+}
+
+.dos-badge-success {
+  background: var(--dos-color-success-soft);
+  color: var(--dos-color-success);
+}
+
+.dos-badge-danger {
+  background: var(--dos-color-danger-soft);
+  color: var(--dos-color-danger);
+}
+
+.dos-badge-warning {
+  background: var(--dos-color-warning-soft);
+  color: var(--dos-color-warning);
+}
+
+.dos-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--dos-space-6);
+}
+
+.dos-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--dos-space-5);
+}
+
+.dos-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--dos-space-5);
+}
+
+.dos-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--dos-space-5);
+}
+
+.dos-empty {
+  border: 1px dashed #cbd5e1;
+  border-radius: var(--dos-radius-2xl);
+  padding: 34px 22px;
+  text-align: center;
+  background: var(--dos-color-surface-soft);
+  color: var(--dos-color-muted);
+}
+
+.dos-empty strong {
+  display: block;
+  color: var(--dos-color-text);
+  font-size: var(--dos-font-lg);
+  margin-bottom: var(--dos-space-2);
+}
+
+@media (max-width: 900px) {
+  .dos-grid-2,
+  .dos-grid-3,
+  .dos-grid-4 {
+    grid-template-columns: 1fr;
+  }
+}
