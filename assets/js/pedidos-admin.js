@@ -18,53 +18,144 @@ let somPedidosAtivo = false;
 let audioPedidoDesbloqueado = false;
 let intervaloSomPedido = null;
 let canalPedidos = null;
+let pedidosDestacados = new Set();
 let lojaAtualPedidos = null;
 
 const STATUS_PEDIDOS = {
   novo: {
-    label: "Novo",
+    label: "🔴 Novo pedido",
     classe: "status-novo",
-    proximo: "aceito",
-    acao: "Aceitar"
+    proximo: "preparando",
+    acao: "Aceitar pedido"
   },
   aceito: {
-    label: "Aceito",
+    label: "🔵 Aceito",
     classe: "status-aceito",
     proximo: "preparando",
     acao: "Preparar"
   },
   preparando: {
-    label: "Preparando",
+    label: "👨‍🍳 Preparando",
     classe: "status-preparando",
     proximo: "pronto",
     acao: "Pronto"
   },
   pronto: {
-    label: "Pronto",
+    label: "📦 Pronto",
     classe: "status-pronto",
     proximo: "saiu_entrega",
     acao: "Saiu para entrega"
   },
   saiu_entrega: {
-    label: "Saiu para entrega",
+    label: "🛵 Saiu para entrega",
     classe: "status-entrega",
     proximo: "finalizado",
     acao: "Finalizar"
   },
   finalizado: {
-    label: "Finalizado",
+    label: "✅ Finalizado",
     classe: "status-finalizado",
     proximo: null,
     acao: null
   },
   cancelado: {
-    label: "Cancelado",
+    label: "❌ Cancelado",
     classe: "status-cancelado",
     proximo: null,
     acao: null
   }
 };
 
+function pedidoEhRetirada(pedido) {
+  return pedido.tipo_recebimento === "retirada" || pedido.tipo_entrega === "retirada";
+}
+
+function obterAcaoPrincipalPedido(pedido) {
+  const status = normalizarStatus(pedido.status);
+  const retirada = pedidoEhRetirada(pedido);
+
+  if (status === "novo") {
+    return {
+      proximo: "preparando",
+      acao: "Aceitar pedido"
+    };
+  }
+
+  if (status === "aceito") {
+    return {
+      proximo: "preparando",
+      acao: "Preparar"
+    };
+  }
+
+  if (status === "preparando" && retirada) {
+    return {
+      proximo: "pronto",
+      acao: "Pronto para retirada"
+    };
+  }
+
+  if (status === "preparando") {
+    return {
+      proximo: "pronto",
+      acao: "Pedido pronto"
+    };
+  }
+
+  if (status === "pronto" && retirada) {
+    return {
+      proximo: "finalizado",
+      acao: "Marcar como retirado"
+    };
+  }
+
+  if (status === "pronto") {
+    return {
+      proximo: "saiu_entrega",
+      acao: "Saiu para entrega"
+    };
+  }
+
+  if (status === "saiu_entrega") {
+    return {
+      proximo: "finalizado",
+      acao: "Marcar como entregue"
+    };
+  }
+
+  return {
+    proximo: null,
+    acao: null
+  };
+}
+
+function obterStatusVisualPedido(pedido) {
+  const status = normalizarStatus(pedido.status);
+  const retirada = pedidoEhRetirada(pedido);
+
+  if (status === "pronto" && retirada) {
+    return {
+      label: "📦 Pronto para retirada",
+      classe: "status-pronto"
+    };
+  }
+
+  if (status === "finalizado" && retirada) {
+    return {
+      label: "✅ Retirado",
+      classe: "status-finalizado"
+    };
+  }
+
+  if (status === "finalizado") {
+    return {
+      label: "✅ Entregue",
+      classe: "status-finalizado"
+    };
+  }
+
+  return STATUS_PEDIDOS[status] || STATUS_PEDIDOS.novo;
+}
 function formatarMoedaPedidos(valor) {
   return Number(valor || 0).toLocaleString("pt-BR", {
     style: "currency",
@@ -81,6 +172,36 @@ function formatarDataPedido(data) {
     hour: "2-digit",
     minute: "2-digit"
   });
+}
+
+function calcularTempoPedido(data) {
+  if (!data) return "";
+
+  const minutos = Math.max(0, Math.floor((Date.now() - new Date(data).getTime()) / 60000));
+
+  if (minutos < 1) {
+    return "agora";
+  }
+
+  if (minutos < 60) {
+    return `${minutos} min`;
+  }
+
+  const horas = Math.floor(minutos / 60);
+  const resto = minutos % 60;
+
+  return `${horas}h ${resto}min`;
+}
+
+function classeTempoPedido(data) {
+  if (!data) return "tempo-ok";
+
+  const minutos = Math.max(0, Math.floor((Date.now() - new Date(data).getTime()) / 60000));
+
+  if (minutos >= 20) return "tempo-atrasado";
+  if (minutos >= 10) return "tempo-alerta";
+
+  return "tempo-ok";
 }
 
 function escaparHTMLPedido(texto) {
@@ -177,11 +298,14 @@ function renderizarPedidos() {
 
 function criarCardPedido(pedido) {
   const status = normalizarStatus(pedido.status);
-  const statusInfo = STATUS_PEDIDOS[status] || STATUS_PEDIDOS.novo;
+  const statusInfo = obterStatusVisualPedido(pedido);
   const itens = Array.isArray(pedido.itens) ? pedido.itens : [];
+  const quantidadeItens = itens.reduce((total, item) => total + Number(item.quantidade || 1), 0);
   const endereco = pedido.endereco || {};
   const numeroPedido = pedido.numero_pedido ? `#${String(pedido.numero_pedido).padStart(4, "0")}` : `#${pedido.id.slice(0, 6)}`;
-  const tipoRecebimento = pedido.tipo_recebimento === "retirada" ? "Retirada" : "Delivery";
+  const tipoRecebimentoRaw = pedido.tipo_recebimento || pedido.tipo_entrega || "delivery";
+  const tipoRecebimento = pedidoEhRetirada(pedido) ? "Retirada" : "Delivery";
+  const acaoPrincipal = obterAcaoPrincipalPedido(pedido);
 
   const itensHTML = itens.map((item) => {
     const adicionais = (item.adicionais || []).map((adicional) => {
@@ -203,7 +327,7 @@ function criarCardPedido(pedido) {
     `;
   }).join("");
 
-  const enderecoHTML = pedido.tipo_recebimento === "retirada"
+  const enderecoHTML = pedidoEhRetirada(pedido)
     ? `<p><strong>Recebimento:</strong> Retirada no balcão</p>`
     : `
       <p><strong>Endereço:</strong> ${escaparHTMLPedido(endereco.rua)}, ${escaparHTMLPedido(endereco.numero)}</p>
@@ -212,21 +336,26 @@ function criarCardPedido(pedido) {
       ${endereco.referencia ? `<p><strong>Referência:</strong> ${escaparHTMLPedido(endereco.referencia)}</p>` : ""}
     `;
 
-  const acaoHTML = statusInfo.proximo
-    ? `<button class="btn-status-pedido" onclick="alterarStatusPedido('${pedido.id}', '${statusInfo.proximo}')">${statusInfo.acao}</button>`
+  const acaoHTML = acaoPrincipal.proximo
+    ? `<button class="btn-status-pedido" onclick="alterarStatusPedido('${pedido.id}', '${acaoPrincipal.proximo}')">${acaoPrincipal.acao}</button>`
     : "";
 
   const cancelarHTML = status !== "cancelado" && status !== "finalizado"
     ? `<button class="btn-cancelar-pedido" onclick="alterarStatusPedido('${pedido.id}', 'cancelado')">Cancelar</button>`
     : "";
 
+  const destaqueRecente = pedidosDestacados.has(pedido.id);
+
   return `
-    <article class="pedido-card ${status === "novo" ? "pedido-novo-destaque" : ""}">
+    <article class="pedido-card ${status === "novo" ? "pedido-novo-destaque" : ""} ${destaqueRecente ? "pedido-recem-chegado" : ""}">
       <div class="pedido-card-topo">
         <div>
-          <span class="pedido-numero">${numeroPedido}</span>
+          <div class="pedido-topo-badges">
+            <span class="pedido-numero">${numeroPedido}</span>
+            <span class="pedido-tempo ${classeTempoPedido(pedido.created_at)}">🕒 ${calcularTempoPedido(pedido.created_at)}</span>
+          </div>
           <h3>${escaparHTMLPedido(pedido.cliente_nome || "Cliente não informado")}</h3>
-          <p>${formatarDataPedido(pedido.created_at)} • ${tipoRecebimento}</p>
+          <p>${formatarDataPedido(pedido.created_at)} • ${tipoRecebimento} • 🛒 ${quantidadeItens === 1 ? "1 item" : `${quantidadeItens} itens`}</p>
         </div>
 
         <span class="pedido-status ${statusInfo.classe}">
@@ -251,7 +380,7 @@ function criarCardPedido(pedido) {
         <div class="pedido-bloco pedido-bloco-total">
           <h4>Resumo</h4>
           <p><span>Subtotal</span><strong>${formatarMoedaPedidos(pedido.subtotal)}</strong></p>
-          <p><span>Entrega</span><strong>${Number(pedido.taxa_entrega || 0) > 0 ? formatarMoedaPedidos(pedido.taxa_entrega) : pedido.tipo_recebimento === "retirada" ? "Retirada" : "A combinar"}</strong></p>
+          <p><span>Entrega</span><strong>${Number(pedido.taxa_entrega || 0) > 0 ? formatarMoedaPedidos(pedido.taxa_entrega) : pedidoEhRetirada(pedido) ? "Retirada" : "A combinar"}</strong></p>
           <p class="pedido-total"><span>Total</span><strong>${formatarMoedaPedidos(pedido.total)}</strong></p>
           <p><span>Pagamento</span><strong>${formatarPagamentoPedido(pedido)}</strong></p>
           ${pedido.observacao ? `<div class="pedido-observacao-geral"><strong>Obs. geral:</strong> ${escaparHTMLPedido(pedido.observacao)}</div>` : ""}
@@ -374,16 +503,7 @@ function iniciarAlertaSonoroPedido() {
 
   tocarSomNovoPedido();
 
-  let repeticoes = 0;
-
   intervaloSomPedido = setInterval(() => {
-    repeticoes++;
-
-    if (repeticoes >= 5) {
-      pararAlertaSonoroPedido();
-      return;
-    }
-
     tocarSomNovoPedido();
   }, 2200);
 }
@@ -419,12 +539,12 @@ function desativarSomPedidos() {
 function mostrarAlertaNovoPedido() {
   if (!alertaPedidoNovo) return;
 
+  alertaPedidoNovo.innerHTML = "🔔 Novo pedido recebido! Clique em Aceitar ou Cancelar para parar o som.";
   alertaPedidoNovo.classList.remove("oculto");
-  alertaPedidoNovo.onclick = pararAlertaSonoroPedido;
 
   setTimeout(() => {
     alertaPedidoNovo.classList.add("oculto");
-  }, 4500);
+  }, 9000);
 }
 
 function iniciarRealtimePedidos() {
@@ -450,9 +570,18 @@ function iniciarRealtimePedidos() {
         }
 
         if (payload.eventType === "INSERT") {
+          pedidosCache = pedidosCache.filter((pedido) => pedido.id !== pedidoNovo.id);
           pedidosCache.unshift(pedidoNovo);
+
+          pedidosDestacados.add(pedidoNovo.id);
+
           iniciarAlertaSonoroPedido();
           mostrarAlertaNovoPedido();
+
+          setTimeout(() => {
+            pedidosDestacados.delete(pedidoNovo.id);
+            renderizarPedidos();
+          }, 18000);
         }
 
         if (payload.eventType === "UPDATE") {
@@ -475,6 +604,7 @@ function iniciarRealtimePedidos() {
 }
 
 function imprimirPedido(pedidoId) {
+  pararAlertaSonoroPedido();
   const pedido = pedidosCache.find((item) => item.id === pedidoId);
 
   if (!pedido) return;
@@ -649,12 +779,38 @@ function instalarEstilosPedidos() {
       box-shadow: 0 12px 34px rgba(239, 68, 68, 0.12);
     }
 
+    .pedido-recem-chegado {
+      animation: pedidoNovoDestaque 1.1s ease-in-out infinite alternate;
+    }
+
+    @keyframes pedidoNovoDestaque {
+      from {
+        border-color: #ef4444;
+        box-shadow: 0 12px 34px rgba(239, 68, 68, 0.15);
+        transform: translateY(0);
+      }
+
+      to {
+        border-color: #b91c1c;
+        box-shadow: 0 18px 46px rgba(239, 68, 68, 0.28);
+        transform: translateY(-2px);
+      }
+    }
+
     .pedido-card-topo {
       display: flex;
       justify-content: space-between;
       gap: 16px;
       align-items: flex-start;
       margin-bottom: 16px;
+    }
+
+    .pedido-topo-badges {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 8px;
     }
 
     .pedido-numero {
@@ -665,7 +821,29 @@ function instalarEstilosPedidos() {
       border-radius: 999px;
       font-size: 12px;
       font-weight: 900;
-      margin-bottom: 8px;
+    }
+
+    .pedido-tempo {
+      display: inline-flex;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .tempo-ok {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .tempo-alerta {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .tempo-atrasado {
+      background: #fee2e2;
+      color: #991b1b;
     }
 
     .pedido-card h3 {
@@ -862,6 +1040,10 @@ async function iniciarPedidosAdmin() {
   await carregarLojaDoUsuarioPedidos();
   await carregarPedidos();
   iniciarRealtimePedidos();
+
+  setInterval(() => {
+    renderizarPedidos();
+  }, 60000);
 }
 
 iniciarPedidosAdmin();
