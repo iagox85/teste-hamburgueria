@@ -14,7 +14,9 @@ const alertaPedidoNovo = document.getElementById("alertaPedidoNovo");
 
 let pedidosCache = [];
 let filtroStatusAtual = "todos";
-let somPedidosAtivo = true;
+let somPedidosAtivo = false;
+let audioPedidoDesbloqueado = false;
+let intervaloSomPedido = null;
 let canalPedidos = null;
 let lojaAtualPedidos = null;
 
@@ -302,6 +304,7 @@ function atualizarResumoPedidos() {
 }
 
 async function alterarStatusPedido(pedidoId, novoStatus) {
+  pararAlertaSonoroPedido();
   const { error } = await supabaseClient
     .from("pedidos")
     .update({
@@ -327,26 +330,89 @@ async function alterarStatusPedido(pedidoId, novoStatus) {
   atualizarResumoPedidos();
 }
 
-function tocarSomNovoPedido() {
-  if (!somPedidosAtivo) return;
+function tocarSomNovoPedido(teste = false) {
+  if (!somPedidosAtivo && !teste) return;
+  if (!audioPedidoDesbloqueado && !teste) return;
 
   try {
     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    const oscilador = audioContext.createOscillator();
-    const ganho = audioContext.createGain();
 
-    oscilador.type = "sine";
-    oscilador.frequency.setValueAtTime(880, audioContext.currentTime);
-    ganho.gain.setValueAtTime(0.14, audioContext.currentTime);
-    ganho.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.45);
+    const tocarNota = (frequencia, inicio, duracao, volume = 0.22) => {
+      const oscilador = audioContext.createOscillator();
+      const ganho = audioContext.createGain();
 
-    oscilador.connect(ganho);
-    ganho.connect(audioContext.destination);
+      oscilador.type = "sine";
+      oscilador.frequency.setValueAtTime(frequencia, audioContext.currentTime + inicio);
 
-    oscilador.start();
-    oscilador.stop(audioContext.currentTime + 0.45);
+      ganho.gain.setValueAtTime(0.001, audioContext.currentTime + inicio);
+      ganho.gain.exponentialRampToValueAtTime(volume, audioContext.currentTime + inicio + 0.03);
+      ganho.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + inicio + duracao);
+
+      oscilador.connect(ganho);
+      ganho.connect(audioContext.destination);
+
+      oscilador.start(audioContext.currentTime + inicio);
+      oscilador.stop(audioContext.currentTime + inicio + duracao);
+    };
+
+    // Ding-dong mais perceptível, em duas ondas
+    tocarNota(784, 0.00, 0.28, 0.24);
+    tocarNota(1046, 0.18, 0.34, 0.26);
+    tocarNota(784, 0.58, 0.28, 0.22);
+    tocarNota(1046, 0.76, 0.38, 0.24);
+
+    audioPedidoDesbloqueado = true;
   } catch (error) {
     console.warn("Não foi possível tocar som:", error);
+  }
+}
+
+function iniciarAlertaSonoroPedido() {
+  if (!somPedidosAtivo || !audioPedidoDesbloqueado) return;
+
+  pararAlertaSonoroPedido();
+
+  tocarSomNovoPedido();
+
+  let repeticoes = 0;
+
+  intervaloSomPedido = setInterval(() => {
+    repeticoes++;
+
+    if (repeticoes >= 5) {
+      pararAlertaSonoroPedido();
+      return;
+    }
+
+    tocarSomNovoPedido();
+  }, 2200);
+}
+
+function pararAlertaSonoroPedido() {
+  if (intervaloSomPedido) {
+    clearInterval(intervaloSomPedido);
+    intervaloSomPedido = null;
+  }
+}
+
+function ativarSomPedidos() {
+  somPedidosAtivo = true;
+  audioPedidoDesbloqueado = true;
+
+  tocarSomNovoPedido(true);
+
+  if (btnSomPedidos) {
+    btnSomPedidos.innerText = "🔔 Som ativado";
+    btnSomPedidos.classList.add("som-ativo");
+  }
+}
+
+function desativarSomPedidos() {
+  somPedidosAtivo = false;
+
+  if (btnSomPedidos) {
+    btnSomPedidos.innerText = "🔕 Som desligado";
+    btnSomPedidos.classList.remove("som-ativo");
   }
 }
 
@@ -354,6 +420,7 @@ function mostrarAlertaNovoPedido() {
   if (!alertaPedidoNovo) return;
 
   alertaPedidoNovo.classList.remove("oculto");
+  alertaPedidoNovo.onclick = pararAlertaSonoroPedido;
 
   setTimeout(() => {
     alertaPedidoNovo.classList.add("oculto");
@@ -384,7 +451,7 @@ function iniciarRealtimePedidos() {
 
         if (payload.eventType === "INSERT") {
           pedidosCache.unshift(pedidoNovo);
-          tocarSomNovoPedido();
+          iniciarAlertaSonoroPedido();
           mostrarAlertaNovoPedido();
         }
 
@@ -529,6 +596,11 @@ function instalarEstilosPedidos() {
       cursor: pointer;
       background: #f3f4f6;
       color: #111827;
+    }
+
+    #btnSomPedidos.som-ativo {
+      background: #dcfce7;
+      color: #166534;
     }
 
     .pedidos-filtros {
@@ -762,13 +834,22 @@ function instalarEstilosPedidos() {
 }
 
 if (btnAtualizarPedidos) {
-  btnAtualizarPedidos.addEventListener("click", carregarPedidos);
+  btnAtualizarPedidos.addEventListener("click", () => {
+    pararAlertaSonoroPedido();
+    carregarPedidos();
+  });
 }
 
 if (btnSomPedidos) {
+  btnSomPedidos.innerText = "🔔 Ativar som";
+  btnSomPedidos.classList.remove("som-ativo");
+
   btnSomPedidos.addEventListener("click", () => {
-    somPedidosAtivo = !somPedidosAtivo;
-    btnSomPedidos.innerText = somPedidosAtivo ? "🔔 Som ligado" : "🔕 Som desligado";
+    if (!somPedidosAtivo || !audioPedidoDesbloqueado) {
+      ativarSomPedidos();
+    } else {
+      desativarSomPedidos();
+    }
   });
 }
 
