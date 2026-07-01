@@ -1254,72 +1254,124 @@ function montarMensagemCheckout() {
   const entrega = obterTaxaEntregaCheckout();
   const total = subtotal + entrega;
 
-  const pagamentoTexto = {
+  const pagamento = {
     pix: "PIX",
-    dinheiro: checkoutDados.trocoPara ? `Dinheiro - troco para ${checkoutMoeda(checkoutDados.trocoPara)}` : "Dinheiro",
+    dinheiro: "Dinheiro",
     cartao_entrega: "Cartão na entrega",
     outro: "Combinar com a loja"
   }[checkoutDados.pagamento] || "Não informado";
 
-  const separador = "-----------------------------";
+  const linha = "━━━━━━━━━━━━━━━━━━━━";
 
-  let mensagem = `🍽️ *NOVO PEDIDO${loja.nome ? ` - ${loja.nome}` : ""}*\n\n`;
+  let msg = `🆕 *NOVO PEDIDO*`;
 
-  mensagem += `👤 *Cliente:* ${checkoutDados.nomeCliente}\n`;
-  mensagem += `📞 *WhatsApp:* ${checkoutDados.telefoneCliente}\n`;
-  mensagem += `📦 *Tipo:* ${checkoutDados.tipoRecebimento === "delivery" ? "Delivery" : "Retirada no balcão"}\n\n`;
+  if (loja.nome) {
+    msg += `
+🏪 ${loja.nome}`;
+  }
+
+  msg += `
+
+${linha}
+
+👤 *CLIENTE*
+${checkoutDados.nomeCliente}
+
+📞 *WhatsApp*
+${checkoutDados.telefoneCliente}
+
+🚚 *Recebimento*
+${checkoutDados.tipoRecebimento === "delivery" ? "Delivery" : "Retirada"}
+`;
 
   if (checkoutDados.tipoRecebimento === "delivery") {
-    mensagem += `📍 *Endereço de entrega*\n`;
-    mensagem += `${checkoutDados.rua}, ${checkoutDados.numero}\n`;
-    mensagem += `${checkoutDados.bairro}${checkoutDados.cidade ? ` - ${checkoutDados.cidade}` : ""}\n`;
+    msg += `
+📍 *ENDEREÇO*
+
+${checkoutDados.rua}, ${checkoutDados.numero}
+${checkoutDados.bairro}${checkoutDados.cidade ? " - " + checkoutDados.cidade : ""}`;
 
     if (checkoutDados.complemento) {
-      mensagem += `Complemento: ${checkoutDados.complemento}\n`;
+      msg += `
+
+Complemento: ${checkoutDados.complemento}`;
     }
 
     if (checkoutDados.referencia) {
-      mensagem += `Referência: ${checkoutDados.referencia}\n`;
+      msg += `
+Referência: ${checkoutDados.referencia}`;
     }
 
     if (checkoutDados.cep) {
-      mensagem += `CEP: ${checkoutDados.cep}\n`;
+      msg += `
+CEP: ${checkoutDados.cep}`;
     }
-
-    mensagem += "\n";
   }
 
-  mensagem += `${separador}\n`;
-  mensagem += `🧾 *ITENS DO PEDIDO*\n`;
+  msg += `
 
-  itens.forEach((item, index) => {
-    mensagem += `\n*${index + 1}. ${item.quantidade}x ${item.nome}*\n`;
-    mensagem += `Valor: ${checkoutMoeda(calcularSubtotalItemCheckout(item))}\n`;
+${linha}
 
-    if ((item.adicionais || []).length) {
-      mensagem += `Adicionais:\n`;
+🛒 *ITENS*
+`;
 
-      item.adicionais.forEach((adicional) => {
-        mensagem += `+ ${adicional.nome} - ${checkoutMoeda(adicional.preco)}\n`;
-      });
-    }
+  itens.forEach((item) => {
+    msg += `
+🍔 *${item.quantidade}x ${item.nome}*
+💵 ${checkoutMoeda(calcularSubtotalItemCheckout(item))}
+`;
+
+    (item.adicionais || []).forEach((adicional) => {
+      msg += `➕ ${adicional.nome} (+${checkoutMoeda(adicional.preco)})
+`;
+    });
 
     if (item.observacao) {
-      mensagem += `Obs: ${item.observacao}\n`;
+      msg += `📝 ${item.observacao}
+`;
     }
   });
 
   if (checkoutDados.observacaoPedido) {
-    mensagem += `\n📝 *Observação geral:* ${checkoutDados.observacaoPedido}\n`;
+    msg += `
+${linha}
+
+📝 *OBSERVAÇÃO DO PEDIDO*
+
+${checkoutDados.observacaoPedido}
+`;
   }
 
-  mensagem += `\n${separador}\n`;
-  mensagem += `💳 *Pagamento:* ${pagamentoTexto}\n`;
-  mensagem += `Subtotal: ${checkoutMoeda(subtotal)}\n`;
-  mensagem += `Entrega: ${checkoutDados.tipoRecebimento === "retirada" ? "Retirada" : entrega > 0 ? checkoutMoeda(entrega) : "A combinar"}\n`;
-  mensagem += `✅ *TOTAL: ${checkoutMoeda(total)}*`;
+  msg += `
+${linha}
 
-  return mensagem;
+💳 *PAGAMENTO*
+
+${pagamento}`;
+
+  if (checkoutDados.pagamento === "dinheiro" && checkoutDados.trocoPara) {
+    msg += `
+💰 Troco para: ${checkoutMoeda(checkoutDados.trocoPara)}`;
+  }
+
+  msg += `
+
+${linha}
+
+💰 *RESUMO*
+
+Subtotal: ${checkoutMoeda(subtotal)}
+Entrega: ${
+    checkoutDados.tipoRecebimento === "retirada"
+      ? "Retirada"
+      : entrega > 0
+      ? checkoutMoeda(entrega)
+      : "A combinar"
+  }
+
+✅ *TOTAL: ${checkoutMoeda(total)}*`;
+
+  return msg;
 }
 
 async function tentarSalvarPedidoNoBanco() {
