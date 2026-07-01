@@ -11,43 +11,49 @@
 <div class="admin-layout">
   <aside id="sidebar" class="sidebar"></aside>
 
-  <main class="content">
+  <main class="content page-stack">
     <header id="topbar" class="topbar"></header>
 
+    <section class="page-hero">
+      <div>
+        <span class="page-hero-kicker">📦 Operação em tempo real</span>
+        <h2>Pedidos recebidos</h2>
+        <p>Acompanhe novos pedidos, aceite, prepare, imprima e finalize tudo em uma tela pensada para o operador.</p>
+      </div>
+
+      <div class="page-hero-actions pedidos-actions">
+        <button id="btnAtualizarPedidos" type="button" class="btn-admin-secondary">Atualizar</button>
+        <button id="btnSomPedidos" type="button" class="btn-admin-secondary">🔔 Som ligado</button>
+      </div>
+    </section>
+
     <section class="cards">
-      <div class="card">
+      <div class="card admin-metric-card">
         <span>Pedidos novos</span>
         <strong id="totalPedidosNovos">0</strong>
       </div>
 
-      <div class="card">
+      <div class="card admin-metric-card">
         <span>Em preparo</span>
         <strong id="totalPedidosPreparo">0</strong>
       </div>
 
-      <div class="card">
+      <div class="card admin-metric-card">
         <span>Finalizados hoje</span>
         <strong id="totalPedidosFinalizados">0</strong>
       </div>
 
-      <div class="card">
+      <div class="card admin-metric-card">
         <span>Faturamento hoje</span>
         <strong id="totalFaturamentoPedidos">R$ 0,00</strong>
       </div>
     </section>
 
-    <section class="panel pedidos-panel">
-      <div class="panel-header">
+    <section class="admin-list-panel pedidos-panel">
+      <div class="admin-list-head">
         <div>
-          <h2>Pedidos recebidos</h2>
-          <p class="panel-subtitle">
-            Acompanhe os pedidos em tempo real.
-          </p>
-        </div>
-
-        <div class="pedidos-actions">
-          <button id="btnAtualizarPedidos" type="button">Atualizar</button>
-          <button id="btnSomPedidos" type="button">🔔 Som ligado</button>
+          <h2>Fila de pedidos</h2>
+          <p>Acompanhe e filtre os pedidos em tempo real.</p>
         </div>
       </div>
 
