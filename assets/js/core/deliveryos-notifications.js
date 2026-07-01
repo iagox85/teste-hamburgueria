@@ -12,6 +12,8 @@
 
   const CANAL_ABAS = "deliveryos_notificacoes_painel";
   const STORAGE_EVENT_KEY = "deliveryos_notificacoes_evento";
+  const STORAGE_ALERTA_ATIVO_KEY = "deliveryos_notificacoes_alerta_ativo";
+  const ALERTA_ATIVO_TTL = 1000 * 60 * 60;
   const TITULO_ORIGINAL = document.title;
 
   let iniciado = false;
@@ -85,6 +87,44 @@
     try {
       if (!canal) canal = new BroadcastChannel(CANAL_ABAS);
       canal.postMessage(evento);
+    } catch (_) {}
+  }
+
+
+  function salvarAlertaAtivo(pedido) {
+    if (!pedido?.id) return;
+
+    try {
+      localStorage.setItem(STORAGE_ALERTA_ATIVO_KEY, JSON.stringify({
+        pedido,
+        timestamp: Date.now()
+      }));
+    } catch (_) {}
+  }
+
+  function obterAlertaAtivo() {
+    try {
+      const bruto = localStorage.getItem(STORAGE_ALERTA_ATIVO_KEY);
+      if (!bruto) return null;
+
+      const dados = JSON.parse(bruto);
+      if (!dados?.pedido?.id) return null;
+
+      const idade = Date.now() - Number(dados.timestamp || 0);
+      if (idade > ALERTA_ATIVO_TTL) {
+        localStorage.removeItem(STORAGE_ALERTA_ATIVO_KEY);
+        return null;
+      }
+
+      return dados.pedido;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function limparAlertaAtivo() {
+    try {
+      localStorage.removeItem(STORAGE_ALERTA_ATIVO_KEY);
     } catch (_) {}
   }
 
@@ -207,6 +247,7 @@
     if (!id) return;
 
     pedidoAtivo = pedido;
+    salvarAlertaAtivo(pedido);
 
     if (estaEmPedidos()) {
       window.DeliveryOSAudio?.startLoop?.();
@@ -224,6 +265,7 @@
 
   function pararAlertas({ avisarAbas = false } = {}) {
     window.DeliveryOSAudio?.stopLoop?.();
+    limparAlertaAtivo();
     removerToastPedido();
     pararTituloPiscando();
     pararBadgeMenu();
@@ -291,8 +333,18 @@
   function configurarParadaAoEntrarEmPedidos() {
     if (!estaEmPedidos()) return;
 
-    // Ao abrir a página de pedidos, qualquer alerta vindo de outra página para.
+    // Entrar em Pedidos é uma ação explícita: para alertas globais vindos de outras telas.
+    limparAlertaAtivo();
     publicarAbas({ tipo: "parar_alerta", motivo: "pedidos_aberto" });
+  }
+
+  function restaurarAlertaEntrePaginas() {
+    if (estaEmPedidos()) return;
+
+    const pedido = obterAlertaAtivo();
+    if (!pedido?.id) return;
+
+    iniciarAlertas(pedido, { avisarAbas: false, origemAbas: true });
   }
 
   async function start() {
@@ -301,6 +353,7 @@
 
     configurarComunicacaoAbas();
     configurarParadaAoEntrarEmPedidos();
+    restaurarAlertaEntrePaginas();
 
     window.addEventListener("deliveryos:pedido-novo", aoPedidoNovo);
     window.addEventListener("deliveryos:pedido-atualizado", aoPedidoAtualizado);

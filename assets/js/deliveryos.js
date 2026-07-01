@@ -7,7 +7,7 @@
 (function () {
   "use strict";
 
-  const VERSION = "20260701-core-notifications-ui";
+  const VERSION = "20260701-core-notifications-persist";
 
   if (window.DeliveryOS && window.DeliveryOS.__version === VERSION) {
     return;
@@ -94,7 +94,7 @@
   };
 
   async function carregarModulosBase() {
-    const versao = "20260701notificacoes-ui";
+    const versao = "20260701notificacoes-persist";
     const modulos = [
       [`assets/js/core/deliveryos-storage.js?v=${versao}`, "deliveryos-storage-script"],
       [`assets/js/components/deliveryos-toast.js?v=${versao}`, "deliveryos-toast-script"],
