@@ -1,5 +1,6 @@
 const formConfiguracoes = document.getElementById("formConfiguracoes");
 const mensagemConfiguracoes = document.getElementById("mensagemConfiguracoes");
+const btnSalvarConfiguracoes = document.querySelector('button[form="formConfiguracoes"]') || document.querySelector('#formConfiguracoes button[type="submit"]');
 const linkPublicoTexto = document.getElementById("linkPublicoTexto");
 const btnAbrirCardapio = document.getElementById("btnAbrirCardapio");
 const btnPrevisualizarCardapio = document.getElementById("btnPrevisualizarCardapio");
@@ -232,8 +233,19 @@ function formatarDataPedido(dataISO) {
 }
 
 function mostrarMensagemConfiguracoes(texto, tipo = "sucesso") {
-  mensagemConfiguracoes.innerText = texto;
-  mensagemConfiguracoes.style.color = tipo === "erro" ? "#dc2626" : "#047857";
+  const tipoToast = tipo === "erro" ? "error" : tipo === "aviso" ? "warning" : tipo === "carregando" ? "loading" : "success";
+
+  if (mensagemConfiguracoes) {
+    mensagemConfiguracoes.innerText = texto;
+    mensagemConfiguracoes.style.color = tipo === "erro" ? "#dc2626" : "#047857";
+  }
+
+  if (typeof window.showToast === "function") {
+    window.showToast(texto, tipoToast, {
+      titulo: tipoToast === "error" ? "Não foi possível concluir" : tipoToast === "loading" ? "Salvando" : "Tudo certo",
+      duracao: tipoToast === "loading" ? 1800 : 3500
+    });
+  }
 }
 
 function atualizarLinkPublico(slug) {
@@ -454,7 +466,11 @@ async function carregarConfiguracoes() {
 formConfiguracoes.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  mostrarMensagemConfiguracoes("Salvando...");
+  if (typeof window.setButtonLoading === "function") {
+    window.setButtonLoading(btnSalvarConfiguracoes, true, "⏳ Salvando...");
+  }
+
+  mostrarMensagemConfiguracoes("Salvando alterações...", "carregando");
 
   const nome = campoValor("lojaNome");
   const descricao = campoValor("lojaDescricao");
@@ -480,6 +496,9 @@ formConfiguracoes.addEventListener("submit", async (e) => {
     if (novoBannerUrl) banner_url = novoBannerUrl;
     if (novaLogoUrl) logo_url = novaLogoUrl;
   } catch (errorUpload) {
+    if (typeof window.setButtonLoading === "function") {
+      window.setButtonLoading(btnSalvarConfiguracoes, false);
+    }
     mostrarMensagemConfiguracoes(errorUpload.message || "Erro ao enviar imagem.", "erro");
     return;
   }
@@ -507,6 +526,9 @@ formConfiguracoes.addEventListener("submit", async (e) => {
     .eq("id", lojaAtual);
 
   if (error) {
+    if (typeof window.setButtonLoading === "function") {
+      window.setButtonLoading(btnSalvarConfiguracoes, false);
+    }
     mostrarMensagemConfiguracoes("Erro ao salvar configurações.", "erro");
     console.error(error);
     return;
@@ -519,6 +541,10 @@ formConfiguracoes.addEventListener("submit", async (e) => {
 
   if (lojaBannerArquivo) lojaBannerArquivo.value = "";
   if (lojaLogoArquivo) lojaLogoArquivo.value = "";
+
+  if (typeof window.setButtonLoading === "function") {
+    window.setButtonLoading(btnSalvarConfiguracoes, false, "Salvando...", "✓ Salvo");
+  }
 
   mostrarMensagemConfiguracoes("Configurações salvas com sucesso!");
 });
