@@ -84,6 +84,16 @@ function obterLogoLoja(loja) {
   );
 }
 
+
+function formatarTextoComIniciaisMaiusculas(texto) {
+  return String(texto || "")
+    .trim()
+    .toLocaleLowerCase("pt-BR")
+    .replace(/(^|[\s,./ºª-])([\p{L}])/gu, (match, separador, letra) => {
+      return `${separador}${letra.toLocaleUpperCase("pt-BR")}`;
+    });
+}
+
 function obterCampoLoja(loja, campos, fallback = "") {
   for (const campo of campos) {
     const valor = loja?.[campo];
@@ -105,18 +115,17 @@ function montarEnderecoLoja(loja) {
   const numero = obterCampoLoja(loja, ["numero", "numero_endereco"]);
   const bairro = obterCampoLoja(loja, ["bairro"]);
   const cidade = obterCampoLoja(loja, ["cidade"]);
-  const estado = obterCampoLoja(loja, ["estado", "uf"]);
 
   const primeiraParte = [enderecoCompleto, numero].filter(Boolean).join(", ");
-  const segundaParte = [bairro, cidade, estado].filter(Boolean).join(" - ");
+  const segundaParte = [bairro, cidade].filter(Boolean).join(" • ");
   const endereco = [primeiraParte, segundaParte].filter(Boolean).join(" • ");
 
-  return endereco || "Endereço não informado";
+  return endereco ? formatarTextoComIniciaisMaiusculas(endereco) : "Endereço não informado";
 }
 
 function montarHorarioLoja(loja) {
   const horario = obterCampoLoja(loja, ["horario_atendimento", "horario", "funcionamento", "horario_funcionamento"]);
-  return horario || "Atendimento online";
+  return horario ? formatarTextoComIniciaisMaiusculas(horario) : "Atendimento online";
 }
 
 function montarLinkRede(url, tipo = "instagram") {
