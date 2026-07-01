@@ -11,11 +11,18 @@ async function protegerAdmin() {
 
 protegerAdmin();
 
-const botaoSair = document.getElementById("sair");
-
-if (botaoSair) {
-  botaoSair.addEventListener("click", async () => {
-    await supabaseClient.auth.signOut();
-    window.location.href = "login.html";
-  });
+async function sairDoSistema() {
+  await supabaseClient.auth.signOut();
+  window.location.href = "login.html";
 }
+
+// Usa clique delegado para funcionar tanto em páginas com botão fixo
+// quanto em páginas onde o botão "Sair" é criado depois pela topbar.
+document.addEventListener("click", async (evento) => {
+  const botaoSair = evento.target.closest("#sair");
+
+  if (!botaoSair) return;
+
+  evento.preventDefault();
+  await sairDoSistema();
+});
