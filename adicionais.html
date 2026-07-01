@@ -12,31 +12,31 @@
 
   <aside id="sidebar" class="sidebar"></aside>
 
-  <main class="content">
+  <main class="content page-stack">
 
-    <header class="topbar">
+    <header id="topbar" class="topbar"></header>
+
+    <section class="page-hero">
       <div>
-        <h1>Adicionais</h1>
-        <p>Cadastre adicionais e vincule cada um a um grupo.</p>
+        <span class="page-hero-kicker">🧀 Complementos</span>
+        <h2>Adicionais da loja</h2>
+        <p>Cadastre bacon, cheddar, molhos, bordas, bebidas extras e tudo que pode aumentar o ticket médio.</p>
       </div>
 
-      <div class="topbar-actions">
-        <button class="notification">🔔</button>
-        <button id="sair">Sair</button>
+      <div class="page-hero-actions">
+        <button id="btnNovoAdicional" type="button" class="btn-admin-secondary">+ Novo adicional</button>
       </div>
-    </header>
+    </section>
 
-    <section class="panel">
-      <div class="panel-header">
+    <section class="admin-list-panel">
+      <div class="admin-list-head">
         <div>
           <h2>Lista de adicionais</h2>
-          <p class="panel-subtitle">Ex.: Bacon, Cheddar, Ovo, Catupiry.</p>
+          <p>Vincule cada adicional a um grupo para aparecer corretamente no produto.</p>
         </div>
-
-        <button id="btnNovoAdicional">+ Novo adicional</button>
       </div>
 
-      <form id="formAdicional" class="form-modal oculto">
+      <form id="formAdicional" class="admin-inline-form oculto">
         <input type="text" id="adicionalNome" placeholder="Nome do adicional" required>
         <textarea id="adicionalDescricao" placeholder="Descrição"></textarea>
 
@@ -45,7 +45,6 @@
         </select>
 
         <input type="number" id="adicionalPreco" placeholder="Preço" step="0.01" required>
-
         <button type="submit">Salvar adicional</button>
       </form>
 
@@ -61,8 +60,10 @@
 <script src="assets/js/supabase.js"></script>
 <script src="assets/js/admin.js"></script>
 <script src="assets/js/sidebar.js"></script>
+<script src="assets/js/topbar.js"></script>
 <script>
   carregarSidebar("adicionais");
+  carregarTopbar("Adicionais", "Cadastre adicionais e vincule cada um a um grupo.");
 </script>
 <script src="assets/js/adicionais-admin.js"></script>
 
