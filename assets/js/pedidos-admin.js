@@ -49,6 +49,39 @@ function salvarAudioDesbloqueadoPedidos() {
   }
 }
 
+function lerAudioDesbloqueadoPedidos() {
+  try {
+    return localStorage.getItem(DELIVERYOS_AUDIO_DESBLOQUEADO_KEY) === "sim";
+  } catch (error) {
+    return false;
+  }
+}
+
+function tentarDesbloquearAudioPedidos() {
+  if (audioPedidoDesbloqueado) return true;
+
+  try {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) return false;
+
+    const audioContext = new AudioContextClass();
+    const oscilador = audioContext.createOscillator();
+    const ganho = audioContext.createGain();
+
+    ganho.gain.setValueAtTime(0.0001, audioContext.currentTime);
+    oscilador.connect(ganho);
+    ganho.connect(audioContext.destination);
+    oscilador.start();
+    oscilador.stop(audioContext.currentTime + 0.02);
+
+    audioPedidoDesbloqueado = true;
+    salvarAudioDesbloqueadoPedidos();
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+
 function publicarPedidoResolvidoPainelPedidos(pedidoId = null) {
   const payload = {
     tipo: "pedido_resolvido",
@@ -92,6 +125,7 @@ function atualizarBotaoSomPedidos() {
 
 function inicializarPreferenciaSomPedidos() {
   somPedidosAtivo = lerPreferenciaSomPedidos();
+  audioPedidoDesbloqueado = lerAudioDesbloqueadoPedidos();
   atualizarBotaoSomPedidos();
 }
 
@@ -611,8 +645,13 @@ function tocarSomNovoPedido(teste = false) {
 }
 
 function iniciarAlertaSonoroPedido() {
-  if (!somPedidosAtivo || !audioPedidoDesbloqueado) return;
-  if (document.visibilityState === "hidden") return;
+  if (!somPedidosAtivo) return;
+
+  if (!audioPedidoDesbloqueado) {
+    tentarDesbloquearAudioPedidos();
+  }
+
+  if (!audioPedidoDesbloqueado) return;
 
   pararAlertaSonoroPedido();
 
@@ -632,7 +671,7 @@ function pararAlertaSonoroPedido() {
 
 function ativarSomPedidos() {
   somPedidosAtivo = true;
-  audioPedidoDesbloqueado = true;
+  tentarDesbloquearAudioPedidos();
 
   salvarPreferenciaSomPedidos(true);
   salvarAudioDesbloqueadoPedidos();
@@ -1159,6 +1198,19 @@ if (btnSomPedidos) {
     }
   });
 }
+
+["pointerdown", "keydown", "touchstart", "click"].forEach((evento) => {
+  window.addEventListener(
+    evento,
+    () => {
+      if (somPedidosAtivo && !audioPedidoDesbloqueado) {
+        tentarDesbloquearAudioPedidos();
+        atualizarBotaoSomPedidos();
+      }
+    },
+    { passive: true }
+  );
+});
 
 
 window.addEventListener("storage", (event) => {
