@@ -22,10 +22,8 @@ const copyrightLoja = document.getElementById("copyrightLoja");
 const formasPagamentoRodape = document.getElementById("formasPagamentoRodape");
 const instagramTopo = document.getElementById("instagramTopo");
 const whatsappTopo = document.getElementById("whatsappTopo");
-const facebookTopo = document.getElementById("facebookTopo");
 const instagramRodape = document.getElementById("instagramRodape");
 const whatsappRodape = document.getElementById("whatsappRodape");
-const facebookRodape = document.getElementById("facebookRodape");
 
 const modalProduto = document.getElementById("modalProduto");
 const fecharModalProduto = document.getElementById("fecharModalProduto");
@@ -121,12 +119,15 @@ function montarHorarioLoja(loja) {
   return horario || "Atendimento online";
 }
 
-function montarLinkRede(url) {
+function montarLinkRede(url, tipo = "instagram") {
   const valor = String(url || "").trim();
 
   if (!valor) return "";
   if (valor.startsWith("http://") || valor.startsWith("https://")) return valor;
-  if (valor.startsWith("@")) return `https://instagram.com/${valor.replace("@", "")}`;
+
+  if (tipo === "instagram") {
+    return `https://instagram.com/${valor.replace("@", "")}`;
+  }
 
   return `https://${valor}`;
 }
@@ -297,8 +298,7 @@ function aplicarDadosDaLoja(loja) {
   const horario = montarHorarioLoja(loja);
   const whatsapp = obterCampoLoja(loja, ["whatsapp", "telefone_whatsapp", "celular"]);
   const telefone = obterCampoLoja(loja, ["telefone", "whatsapp", "celular"], "Telefone não informado");
-  const instagram = montarLinkRede(obterCampoLoja(loja, ["instagram", "instagram_url", "link_instagram"]));
-  const facebook = montarLinkRede(obterCampoLoja(loja, ["facebook", "facebook_url", "link_facebook"]));
+  const instagram = montarLinkRede(obterCampoLoja(loja, ["instagram", "instagram_url", "link_instagram"]), "instagram");
   const whatsappLink = montarLinkWhatsapp(whatsapp || telefone);
   const tipoAtendimento = obterCampoLoja(loja, ["tipo_atendimento", "atendimento"], "Entrega ou retirada");
 
@@ -353,8 +353,6 @@ function aplicarDadosDaLoja(loja) {
 
   atualizarLinkSocial(instagramTopo, instagram);
   atualizarLinkSocial(instagramRodape, instagram);
-  atualizarLinkSocial(facebookTopo, facebook);
-  atualizarLinkSocial(facebookRodape, facebook);
   atualizarLinkSocial(whatsappTopo, whatsappLink);
   atualizarLinkSocial(whatsappRodape, whatsappLink);
   renderizarPagamentosLoja(loja);
