@@ -14,20 +14,68 @@
   <main class="content">
     <header id="topbar" class="topbar"></header>
 
-    <section class="panel">
+    <section class="cards">
+      <div class="card">
+        <span>Pedidos novos</span>
+        <strong id="totalPedidosNovos">0</strong>
+      </div>
+
+      <div class="card">
+        <span>Em preparo</span>
+        <strong id="totalPedidosPreparo">0</strong>
+      </div>
+
+      <div class="card">
+        <span>Finalizados hoje</span>
+        <strong id="totalPedidosFinalizados">0</strong>
+      </div>
+
+      <div class="card">
+        <span>Faturamento hoje</span>
+        <strong id="totalFaturamentoPedidos">R$ 0,00</strong>
+      </div>
+    </section>
+
+    <section class="panel pedidos-panel">
       <div class="panel-header">
         <div>
           <h2>Pedidos recebidos</h2>
-          <p class="panel-subtitle">Aqui aparecerão os pedidos feitos pelos clientes.</p>
+          <p class="panel-subtitle">
+            Acompanhe os pedidos em tempo real.
+          </p>
+        </div>
+
+        <div class="pedidos-actions">
+          <button id="btnAtualizarPedidos" type="button">Atualizar</button>
+          <button id="btnSomPedidos" type="button">🔔 Som ligado</button>
         </div>
       </div>
 
-      <div id="listaPedidos" class="lista-produtos">
-        <p>Nenhum pedido recebido ainda.</p>
+      <div class="pedidos-filtros">
+        <button class="active" data-status-filtro="todos">Todos</button>
+        <button data-status-filtro="novo">Novos</button>
+        <button data-status-filtro="aceito">Aceitos</button>
+        <button data-status-filtro="preparando">Preparando</button>
+        <button data-status-filtro="pronto">Prontos</button>
+        <button data-status-filtro="saiu_entrega">Saiu para entrega</button>
+        <button data-status-filtro="finalizado">Finalizados</button>
+        <button data-status-filtro="cancelado">Cancelados</button>
+      </div>
+
+      <div id="alertaPedidoNovo" class="alerta-pedido-novo oculto">
+        🔔 Novo pedido recebido!
+      </div>
+
+      <div id="listaPedidos" class="pedidos-lista">
+        <p>Carregando pedidos...</p>
       </div>
     </section>
   </main>
 </div>
+
+<audio id="audioPedidoNovo" preload="auto">
+  <source src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQAAAAA=" type="audio/wav">
+</audio>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="assets/js/config.js"></script>
@@ -40,6 +88,8 @@
   carregarSidebar("pedidos");
   carregarTopbar("Pedidos", "Acompanhe os pedidos da sua loja em tempo real.");
 </script>
+
+<script src="assets/js/pedidos-admin.js"></script>
 
 </body>
 </html>
