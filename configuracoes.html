@@ -5,548 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Configurações - DeliveryOS</title>
   <link rel="stylesheet" href="assets/css/admin.css">
-
-<style>
-  .link-publico-loja {
-    margin-top: 24px;
-    padding: 26px;
-    border: 1px solid #e5e7eb;
-    border-radius: 22px;
-    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-    display: grid;
-    grid-template-columns: 1fr 240px;
-    gap: 28px;
-    align-items: center;
-    box-shadow: 0 14px 35px rgba(15, 23, 42, 0.04);
-  }
-
-  .link-publico-info {
-    min-width: 0;
-  }
-
-  .link-publico-selo {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 7px 12px;
-    border-radius: 999px;
-    background: #ecfdf5;
-    color: #047857;
-    font-size: 12px;
-    font-weight: 800;
-    margin-bottom: 14px;
-  }
-
-  .link-publico-topo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 12px;
-  }
-
-  .link-publico-icone {
-    width: 44px;
-    height: 44px;
-    border-radius: 15px;
-    background: #dcfce7;
-    color: #047857;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    flex: 0 0 auto;
-  }
-
-  .link-publico-label {
-    display: block;
-    font-size: 13px;
-    color: #6b7280;
-    margin-bottom: 2px;
-  }
-
-  .link-publico-titulo {
-    font-size: 21px;
-    color: #111827;
-    font-weight: 900;
-  }
-
-  .link-publico-url-card {
-    margin-top: 16px;
-    padding: 14px 16px;
-    border: 1px solid #e5e7eb;
-    border-radius: 16px;
-    background: #ffffff;
-    max-width: 560px;
-  }
-
-  .link-publico-url-label {
-    display: block;
-    font-size: 12px;
-    color: #6b7280;
-    margin-bottom: 4px;
-  }
-
-  .link-publico-url {
-    display: inline-block;
-    max-width: 100%;
-    color: #111827;
-    font-size: 17px;
-    font-weight: 900;
-    text-decoration: none;
-    word-break: break-word;
-  }
-
-  .link-publico-url:hover {
-    text-decoration: underline;
-  }
-
-  .link-publico-url-real {
-    margin-top: 6px;
-    color: #6b7280;
-    font-size: 12px;
-    word-break: break-all;
-  }
-
-  .link-publico-descricao {
-    margin-top: 10px;
-    color: #6b7280;
-    font-size: 14px;
-    max-width: 620px;
-  }
-
-  .link-publico-acoes {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 18px;
-  }
-
-  .btn-link-publico {
-    border: none;
-    border-radius: 13px;
-    padding: 12px 16px;
-    cursor: pointer;
-    white-space: nowrap;
-    font-weight: 800;
-    font-size: 14px;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: transform 0.2s ease, filter 0.2s ease, box-shadow 0.2s ease;
-  }
-
-  .btn-link-publico:hover {
-    transform: translateY(-1px);
-    filter: brightness(0.96);
-    box-shadow: 0 10px 18px rgba(15, 23, 42, 0.08);
-  }
-
-  .btn-link-publico.primario {
-    background: #10b981;
-    color: #ffffff;
-  }
-
-  .btn-link-publico.secundario {
-    background: #111827;
-    color: #ffffff;
-  }
-
-  .btn-link-publico.neutro {
-    background: #ffffff;
-    color: #111827;
-    border: 1px solid #e5e7eb;
-  }
-
-  .link-publico-stats {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(130px, 1fr));
-    gap: 10px;
-    max-width: 520px;
-    margin-top: 18px;
-  }
-
-  .link-publico-stat {
-    padding: 13px 14px;
-    border-radius: 16px;
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
-  }
-
-  .link-publico-stat span {
-    display: block;
-    color: #6b7280;
-    font-size: 12px;
-    margin-bottom: 4px;
-  }
-
-  .link-publico-stat strong {
-    display: block;
-    color: #111827;
-    font-size: 16px;
-  }
-
-  .qr-code-box {
-    width: 240px;
-    padding: 18px;
-    border-radius: 22px;
-    border: 1px solid #e5e7eb;
-    background: #ffffff;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.05);
-  }
-
-  .qr-code-imagem {
-    width: 190px;
-    height: 190px;
-    background: #ffffff;
-    border-radius: 16px;
-    padding: 8px;
-    border: 1px solid #eef2f7;
-    cursor: pointer;
-    transition: transform 0.2s ease;
-  }
-
-  .qr-code-imagem:hover {
-    transform: scale(1.03);
-  }
-
-  .qr-code-box small {
-    text-align: center;
-    color: #6b7280;
-    font-size: 12px;
-    line-height: 1.35;
-  }
-
-  #btnBaixarQrCode {
-    width: 100%;
-    padding: 11px 12px;
-    font-size: 12px;
-  }
-
-  .qr-modal {
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-    background: rgba(15, 23, 42, 0.72);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-  }
-
-  .qr-modal.ativo {
-    display: flex;
-  }
-
-  .qr-modal-card {
-    width: min(420px, 100%);
-    background: #ffffff;
-    border-radius: 24px;
-    padding: 24px;
-    text-align: center;
-    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.25);
-  }
-
-  .qr-modal-card img {
-    width: 280px;
-    height: 280px;
-    max-width: 100%;
-    border-radius: 18px;
-    border: 1px solid #e5e7eb;
-    padding: 10px;
-  }
-
-  .qr-modal-card h3 {
-    margin: 14px 0 6px;
-    font-size: 20px;
-    color: #111827;
-  }
-
-  .qr-modal-card p {
-    margin: 0 0 16px;
-    color: #6b7280;
-    font-size: 13px;
-  }
-
-  .qr-modal-acoes {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-
-  #mensagemConfiguracoes {
-    margin-top: 12px;
-    font-size: 14px;
-    color: #047857;
-  }
-
-  @media (max-width: 900px) {
-    .link-publico-loja {
-      grid-template-columns: 1fr;
-    }
-
-    .qr-code-box {
-      width: 100%;
-    }
-
-    .qr-code-imagem {
-      width: 210px;
-      height: 210px;
-    }
-  }
-
-  @media (max-width: 560px) {
-    .link-publico-loja {
-      padding: 20px;
-    }
-
-    .link-publico-acoes,
-    .link-publico-stats {
-      grid-template-columns: 1fr;
-      flex-direction: column;
-    }
-
-    .btn-link-publico {
-      width: 100%;
-    }
-  }
-
-
-  .upload-imagem-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 16px;
-  }
-
-  .upload-imagem-card {
-    border: 1px solid #e5e7eb;
-    border-radius: 18px;
-    background: #f8fafc;
-    padding: 16px;
-  }
-
-  .upload-imagem-card label {
-    display: block;
-    font-weight: 900;
-    color: #111827;
-    margin-bottom: 6px;
-  }
-
-  .upload-imagem-card small {
-    display: block;
-    color: #64748b;
-    line-height: 1.45;
-    margin-bottom: 12px;
-  }
-
-  .upload-imagem-card input[type="file"] {
-    width: 100%;
-    padding: 11px;
-    border: 1px dashed #cbd5e1;
-    border-radius: 14px;
-    background: #ffffff;
-    cursor: pointer;
-  }
-
-  .upload-preview {
-    margin-top: 12px;
-    border-radius: 16px;
-    border: 1px solid #e5e7eb;
-    background: #ffffff;
-    min-height: 86px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    color: #94a3b8;
-    font-size: 13px;
-    font-weight: 700;
-  }
-
-  .upload-preview.banner {
-    aspect-ratio: 3 / 1;
-  }
-
-  .upload-preview.logo {
-    width: 112px;
-    height: 112px;
-    border-radius: 22px;
-  }
-
-  .upload-preview img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-
-  .upload-ajuda {
-    margin-top: 8px;
-    color: #64748b;
-    font-size: 12px;
-  }
-
-  @media (max-width: 800px) {
-    .upload-imagem-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-
-
-  .config-tabs {
-    margin-top: 22px;
-  }
-
-  .config-tabs-nav {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    padding: 8px;
-    border: 1px solid #e5e7eb;
-    border-radius: 18px;
-    background: #f8fafc;
-    margin-bottom: 20px;
-  }
-
-  .config-tab-btn {
-    border: none;
-    background: transparent;
-    color: #475569;
-    border-radius: 14px;
-    padding: 12px 16px;
-    font-size: 14px;
-    font-weight: 900;
-    cursor: pointer;
-    transition: background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
-  }
-
-  .config-tab-btn:hover {
-    background: #ffffff;
-    color: #111827;
-  }
-
-  .config-tab-btn.ativo {
-    background: #111827;
-    color: #ffffff;
-    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.14);
-  }
-
-  .config-tab-pane {
-    display: none;
-    animation: configFade 0.22s ease both;
-  }
-
-  .config-tab-pane.ativo {
-    display: block;
-  }
-
-  @keyframes configFade {
-    from { opacity: 0; transform: translateY(6px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .config-section-card {
-    border: 1px solid #e5e7eb;
-    border-radius: 22px;
-    background: #ffffff;
-    padding: 22px;
-    margin-bottom: 18px;
-  }
-
-  .config-section-card h3 {
-    margin: 0 0 6px;
-    color: #111827;
-    font-size: 18px;
-    font-weight: 900;
-  }
-
-  .config-section-card p {
-    margin: 0 0 18px;
-    color: #64748b;
-    font-size: 14px;
-  }
-
-  .config-grid-2 {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 14px;
-  }
-
-  .config-grid-3 {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 14px;
-  }
-
-  .config-campo label {
-    display: block;
-    font-size: 13px;
-    font-weight: 900;
-    color: #334155;
-    margin-bottom: 7px;
-  }
-
-  .config-campo small {
-    display: block;
-    color: #64748b;
-    font-size: 12px;
-    line-height: 1.4;
-    margin-top: 6px;
-  }
-
-  .config-save-bar {
-    position: sticky;
-    bottom: 18px;
-    z-index: 20;
-    display: flex;
-    justify-content: flex-end;
-    padding-top: 8px;
-  }
-
-  .config-save-bar button {
-    min-width: 220px;
-    box-shadow: 0 16px 32px rgba(239, 68, 68, 0.22);
-  }
-
-  @media (max-width: 900px) {
-    .config-grid-2,
-    .config-grid-3 {
-      grid-template-columns: 1fr;
-    }
-
-    .config-tabs-nav {
-      overflow-x: auto;
-      flex-wrap: nowrap;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .config-tab-btn {
-      white-space: nowrap;
-    }
-  }
-
-  @media (max-width: 560px) {
-    .config-section-card {
-      padding: 16px;
-      border-radius: 18px;
-    }
-
-    .config-save-bar {
-      bottom: 12px;
-    }
-
-    .config-save-bar button {
-      width: 100%;
-    }
-  }
-
-</style>
 </head>
 <body>
 
@@ -558,75 +16,89 @@
 
     <header id="topbar" class="topbar"></header>
 
-    <section class="panel">
+    <section class="panel config-premium-page">
+      <div class="config-shell">
 
-      <div class="panel-header">
-        <div>
-          <h2>Configurações da Loja</h2>
-          <p class="panel-subtitle">
-            Atualize as informações principais da loja.
-          </p>
-        </div>
-      </div>
+        <aside class="config-side">
+          <h2>Configurações</h2>
+          <p>Gerencie as informações da sua loja e do cardápio público.</p>
 
-      <form id="formConfiguracoes" class="form-modal">
+          <nav class="config-nav" aria-label="Menu de configurações">
+            <a href="#sec-informacoes" class="ativo">🏪 Informações</a>
+            <a href="#sec-imagens">🖼️ Imagens</a>
+            <a href="#sec-redes">🔗 Redes sociais</a>
+            <a href="#sec-entrega">🛵 Entrega e pedido</a>
+            <a href="#sec-pagamento">💳 Pagamento</a>
+            <a href="#sec-link-publico">🌐 Link público</a>
+          </nav>
 
-        <div class="config-tabs">
-          <div class="config-tabs-nav" role="tablist" aria-label="Seções de configuração da loja">
-            <button type="button" class="config-tab-btn ativo" data-tab="informacoes">Informações</button>
-            <button type="button" class="config-tab-btn" data-tab="imagens">Imagens</button>
-            <button type="button" class="config-tab-btn" data-tab="redes">Redes sociais</button>
-            <button type="button" class="config-tab-btn" data-tab="entrega">Entrega e pedido</button>
-            <button type="button" class="config-tab-btn" data-tab="pagamento">Pagamento</button>
+          <div class="config-help-box">
+            <strong>Precisa de ajuda?</strong>
+            <small>Preencha os dados principais, salve e teste o cardápio antes de divulgar.</small>
+            <a href="#sec-link-publico">Ver link da loja</a>
+          </div>
+        </aside>
+
+        <div class="config-main">
+          <div class="config-top-actions">
+            <a href="#" target="_blank" rel="noopener" id="btnPrevisualizarCardapio" class="btn-admin-secondary">👁️ Pré-visualizar cardápio</a>
+            <button type="submit" form="formConfiguracoes" class="btn-admin-primary">💾 Salvar alterações</button>
           </div>
 
-          <div class="config-tab-pane ativo" data-tab-content="informacoes">
-            <div class="config-section-card">
-              <h3>Informações da loja</h3>
-              <p>Dados principais que aparecem no cardápio público e ajudam o cliente a confiar na loja.</p>
+          <form id="formConfiguracoes" class="form-modal">
+
+            <section id="sec-informacoes" class="config-section-card">
+              <div class="config-section-header">
+                <div>
+                  <h3>Informações da loja</h3>
+                  <p>Dados principais que aparecem no cardápio público e ajudam o cliente a confiar na loja.</p>
+                </div>
+              </div>
 
               <div class="config-grid-2">
-                <div class="config-campo">
+                <div class="config-field">
                   <label for="lojaNome">Nome da loja</label>
                   <input type="text" id="lojaNome" placeholder="Ex: XS Hamburguer" required>
                 </div>
 
-                <div class="config-campo">
+                <div class="config-field">
                   <label for="lojaHorario">Horário de atendimento</label>
                   <input type="text" id="lojaHorario" placeholder="Ex: Todos os dias: 18h às 23h">
                 </div>
               </div>
 
-              <div class="config-campo">
+              <div class="config-field full config-row-spaced">
                 <label for="lojaDescricao">Descrição da loja</label>
                 <textarea id="lojaDescricao" placeholder="Ex: O melhor hambúrguer artesanal da cidade."></textarea>
               </div>
 
-              <div class="config-grid-3">
-                <div class="config-campo">
+              <div class="config-grid-3 config-row-spaced">
+                <div class="config-field">
                   <label for="lojaEndereco">Endereço</label>
                   <input type="text" id="lojaEndereco" placeholder="Ex: Rua Das Palmeiras, 123">
                   <small>O cardápio vai exibir com iniciais maiúsculas.</small>
                 </div>
 
-                <div class="config-campo">
+                <div class="config-field">
                   <label for="lojaBairro">Bairro</label>
                   <input type="text" id="lojaBairro" placeholder="Ex: Centro">
                 </div>
 
-                <div class="config-campo">
+                <div class="config-field">
                   <label for="lojaCidade">Cidade</label>
                   <input type="text" id="lojaCidade" placeholder="Ex: Cariacica">
                   <small>O estado não será exibido no cardápio.</small>
                 </div>
               </div>
-            </div>
-          </div>
+            </section>
 
-          <div class="config-tab-pane" data-tab-content="imagens">
-            <div class="config-section-card">
-              <h3>Imagens do cardápio</h3>
-              <p>Envie imagens leves e bem enquadradas. O limite máximo é 1MB por imagem.</p>
+            <section id="sec-imagens" class="config-section-card">
+              <div class="config-section-header">
+                <div>
+                  <h3>Imagens do cardápio</h3>
+                  <p>Envie imagens leves e bem enquadradas. O limite máximo é 1MB por imagem.</p>
+                </div>
+              </div>
 
               <div class="upload-imagem-grid">
                 <div class="upload-imagem-card">
@@ -647,137 +119,145 @@
                   <div class="upload-ajuda">Use uma imagem quadrada para ficar bonita no cardápio.</div>
                 </div>
               </div>
-            </div>
-          </div>
+            </section>
 
-          <div class="config-tab-pane" data-tab-content="redes">
-            <div class="config-section-card">
-              <h3>Redes sociais e contato</h3>
-              <p>Esses links aparecem no topo e no rodapé do cardápio público.</p>
+            <section id="sec-redes" class="config-section-card">
+              <div class="config-section-header">
+                <div>
+                  <h3>Redes sociais e contato</h3>
+                  <p>Esses dados aparecem no cardápio público e facilitam o contato do cliente.</p>
+                </div>
+              </div>
 
-              <div class="config-grid-2">
-                <div class="config-campo">
+              <div class="config-grid-3">
+                <div class="config-field">
                   <label for="lojaWhatsapp">WhatsApp da loja</label>
                   <input type="text" id="lojaWhatsapp" placeholder="Ex: 27999999999">
                   <small>Informe apenas números com DDD.</small>
                 </div>
 
-                <div class="config-campo">
+                <div class="config-field">
                   <label for="lojaTelefone">Telefone</label>
                   <input type="text" id="lojaTelefone" placeholder="Ex: 27999999999">
                 </div>
-              </div>
 
-              <div class="config-campo">
-                <label for="lojaInstagram">Instagram</label>
-                <input type="text" id="lojaInstagram" placeholder="Ex: @sualoja ou https://instagram.com/sualoja">
+                <div class="config-field">
+                  <label for="lojaInstagram">Instagram</label>
+                  <input type="text" id="lojaInstagram" placeholder="Ex: @sualoja ou https://instagram.com/sualoja">
+                </div>
               </div>
-            </div>
-          </div>
+            </section>
 
-          <div class="config-tab-pane" data-tab-content="entrega">
-            <div class="config-section-card">
-              <h3>Entrega e pedido</h3>
-              <p>Defina as informações comerciais exibidas para o cliente antes de fazer o pedido.</p>
+            <section id="sec-entrega" class="config-section-card">
+              <div class="config-section-header">
+                <div>
+                  <h3>Entrega e pedido</h3>
+                  <p>Defina as informações comerciais exibidas para o cliente antes de fazer o pedido.</p>
+                </div>
+              </div>
 
               <div class="config-grid-2">
-                <div class="config-campo">
+                <div class="config-field">
                   <label for="lojaPedidoMinimo">Pedido mínimo</label>
-                  <input type="number" id="lojaPedidoMinimo" placeholder="Pedido mínimo" step="0.01">
+                  <input type="number" id="lojaPedidoMinimo" placeholder="Ex: R$ 25,00" step="0.01">
                 </div>
 
-                <div class="config-campo">
-                  <label for="lojaTempoEntrega">Tempo médio de entrega</label>
-                  <input type="number" id="lojaTempoEntrega" placeholder="Tempo médio em minutos">
+                <div class="config-field">
+                  <label for="lojaTempoEntrega">Tempo médio de entrega (min)</label>
+                  <input type="number" id="lojaTempoEntrega" placeholder="Ex: 30">
                 </div>
               </div>
-            </div>
-          </div>
+            </section>
 
-          <div class="config-tab-pane" data-tab-content="pagamento">
-            <div class="config-section-card">
-              <h3>Pagamento</h3>
-              <p>Configure as opções que aparecem no rodapé e no checkout.</p>
+            <section id="sec-pagamento" class="config-section-card compact-card">
+              <div class="config-section-header">
+                <div>
+                  <h3>Pagamento</h3>
+                  <p>Configure as opções que aparecem no rodapé e no checkout.</p>
+                </div>
+              </div>
 
               <div class="config-grid-2">
-                <div class="config-campo">
+                <div class="config-field">
                   <label for="lojaPix">Chave PIX</label>
                   <input type="text" id="lojaPix" placeholder="Chave PIX">
                 </div>
 
-                <div class="config-campo">
+                <div class="config-field">
                   <label for="lojaFormasPagamento">Formas de pagamento</label>
                   <input type="text" id="lojaFormasPagamento" placeholder="Ex: PIX, Dinheiro, Cartão">
                   <small>Separe as formas de pagamento por vírgula.</small>
                 </div>
               </div>
+            </section>
+
+          </form>
+
+          <section id="sec-link-publico" class="config-section-card compact-card">
+            <div class="link-publico-loja">
+              <div class="link-publico-info">
+                <div class="link-publico-selo">🌐 Compartilhe sua loja</div>
+
+                <div class="link-publico-topo">
+                  <div class="link-publico-icone">🔗</div>
+                  <div>
+                    <span class="link-publico-label">Link do seu cardápio</span>
+                    <div class="link-publico-titulo">Cardápio público da loja</div>
+                  </div>
+                </div>
+
+                <div class="link-publico-url-card">
+                  <div class="link-publico-url-card-inner">
+                    <span class="link-publico-url-label">Seu link</span>
+                    <a href="#" target="_blank" rel="noopener" id="linkPublicoTexto" class="link-publico-url">
+                      Carregando link...
+                    </a>
+                    <div id="linkPublicoReal" class="link-publico-url-real"></div>
+                  </div>
+
+                  <button type="button" id="btnCopiarLinkLoja" class="btn-link-publico secundario">
+                    Copiar link
+                  </button>
+                </div>
+
+                <p class="link-publico-descricao">
+                  Este é o link público da sua loja. Compartilhe com seus clientes para receber pedidos.
+                </p>
+
+                <div class="link-publico-acoes">
+                  <a href="#" target="_blank" rel="noopener" id="btnAbrirCardapio" class="btn-link-publico primario">
+                    📱 Testar cardápio
+                  </a>
+
+                  <button type="button" id="btnCompartilharLinkLoja" class="btn-link-publico neutro">
+                    Compartilhar
+                  </button>
+                </div>
+
+                <div class="link-publico-stats">
+                  <div class="link-publico-stat">
+                    <span>Pedidos hoje</span>
+                    <strong id="pedidosHojeResumo">--</strong>
+                  </div>
+
+                  <div class="link-publico-stat">
+                    <span>Último pedido recebido</span>
+                    <strong id="ultimoPedidoResumo">--</strong>
+                  </div>
+                </div>
+              </div>
+
+              <div class="qr-code-box">
+                <img id="qrCodeImagem" class="qr-code-imagem" src="" alt="QR Code do cardápio público">
+                <small>Clique no QR Code para ampliar. Use em mesas, balcão, embalagens ou panfletos.</small>
+                <button type="button" id="btnBaixarQrCode" class="btn-link-publico secundario">
+                  Baixar QR Code
+                </button>
+              </div>
             </div>
-          </div>
-        </div>
+          </section>
 
-        <div class="config-save-bar">
-          <button type="submit">Salvar configurações</button>
-        </div>
-
-      </form>
-
-      <div class="link-publico-loja">
-        <div class="link-publico-info">
-          <div class="link-publico-selo">🌐 Compartilhe sua loja</div>
-
-          <div class="link-publico-topo">
-            <div class="link-publico-icone">🔗</div>
-            <div>
-              <span class="link-publico-label">Link do seu cardápio</span>
-              <div class="link-publico-titulo">Cardápio público da loja</div>
-            </div>
-          </div>
-
-          <div class="link-publico-url-card">
-            <span class="link-publico-url-label">Seu link</span>
-            <a href="#" target="_blank" rel="noopener" id="linkPublicoTexto" class="link-publico-url">
-              Carregando link...
-            </a>
-            <div id="linkPublicoReal" class="link-publico-url-real"></div>
-          </div>
-
-          <p class="link-publico-descricao">
-            Este é o link público da sua loja. Compartilhe com seus clientes para receber pedidos.
-          </p>
-
-          <div class="link-publico-acoes">
-            <a href="#" target="_blank" rel="noopener" id="btnAbrirCardapio" class="btn-link-publico primario">
-              📱 Testar meu cardápio
-            </a>
-
-            <button type="button" id="btnCopiarLinkLoja" class="btn-link-publico secundario">
-              Copiar link
-            </button>
-
-            <button type="button" id="btnCompartilharLinkLoja" class="btn-link-publico neutro">
-              Compartilhar
-            </button>
-          </div>
-
-          <div class="link-publico-stats">
-            <div class="link-publico-stat">
-              <span>Pedidos hoje</span>
-              <strong id="pedidosHojeResumo">--</strong>
-            </div>
-
-            <div class="link-publico-stat">
-              <span>Último pedido recebido</span>
-              <strong id="ultimoPedidoResumo">--</strong>
-            </div>
-          </div>
-        </div>
-
-        <div class="qr-code-box">
-          <img id="qrCodeImagem" class="qr-code-imagem" src="" alt="QR Code do cardápio público">
-          <small>Clique no QR Code para ampliar. Use em mesas, balcão, embalagens ou panfletos.</small>
-          <button type="button" id="btnBaixarQrCode" class="btn-link-publico secundario">
-            Baixar QR Code
-          </button>
+          <div id="mensagemConfiguracoes"></div>
         </div>
       </div>
 
@@ -792,8 +272,6 @@
           </div>
         </div>
       </div>
-
-      <div id="mensagemConfiguracoes"></div>
 
     </section>
 
