@@ -8,61 +8,52 @@
 </head>
 <body>
 
-<header class="loja-header">
-  <div class="loja-banner" id="lojaBanner">
-    <div class="loja-banner-overlay"></div>
-
-    <div class="loja-header-content">
-      <div class="loja-perfil">
-        <div class="loja-avatar" id="lojaLogo">D</div>
-
-        <div class="loja-info">
-          <div class="loja-status-line">
-            <span id="statusLoja" class="status-loja aberto">Aberta</span>
-            <span id="tempoEntrega">Carregando...</span>
-            <span id="tipoAtendimentoLoja">Entrega ou retirada</span>
-          </div>
-
-          <h1 id="nomeLoja">Carregando...</h1>
-          <p id="descricaoLoja"></p>
-
-          <div class="loja-meta loja-meta-principal">
-            <span id="pedidoMinimoLoja">Pedido mínimo: R$ 0,00</span>
-            <span id="taxaEntregaLoja">Entrega a combinar</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="loja-header-social" id="redesSociaisTopo">
-        <strong>Siga-nos</strong>
-        <div class="loja-social-links">
-          <a id="instagramTopo" href="#" target="_blank" rel="noopener" class="oculto social-instagram" aria-label="Instagram" title="Instagram">
-            <span class="social-icone-texto">Instagram</span>
-          </a>
-          <a id="whatsappTopo" href="#" target="_blank" rel="noopener" class="oculto social-whatsapp" aria-label="WhatsApp" title="WhatsApp">
-            <span class="social-icone-texto">WhatsApp</span>
-          </a>
-        </div>
-      </div>
-    </div>
-
-    <div class="loja-detalhes-barra">
-      <span id="enderecoLojaTopo">📍 Endereço não informado</span>
-      <span id="telefoneLojaTopo">☎ Telefone não informado</span>
-      <span id="horarioLojaTopo">🕒 Atendimento online</span>
+<header class="loja-header loja-header-compacto">
+  <div class="loja-banner loja-banner-limpo" id="lojaBanner">
+    <div class="loja-banner-acoes" id="redesSociaisTopo">
+      <a id="instagramTopo" href="#" target="_blank" rel="noopener" class="oculto social-instagram" aria-label="Instagram" title="Instagram">
+        <span class="social-icone-texto" aria-hidden="true"><svg viewBox="0 0 24 24" role="img"><path d="M7.8 2h8.4A5.8 5.8 0 0 1 22 7.8v8.4A5.8 5.8 0 0 1 16.2 22H7.8A5.8 5.8 0 0 1 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2Zm0 2A3.8 3.8 0 0 0 4 7.8v8.4A3.8 3.8 0 0 0 7.8 20h8.4a3.8 3.8 0 0 0 3.8-3.8V7.8A3.8 3.8 0 0 0 16.2 4H7.8Zm4.2 3.2A4.8 4.8 0 1 1 12 16.8 4.8 4.8 0 0 1 12 7.2Zm0 2A2.8 2.8 0 1 0 14.8 12 2.8 2.8 0 0 0 12 9.2Zm5-2.6a1.1 1.1 0 1 1-1.1 1.1A1.1 1.1 0 0 1 17 6.6Z"/></svg></span>
+      </a>
+      <a id="whatsappTopo" href="#" target="_blank" rel="noopener" class="oculto social-whatsapp" aria-label="WhatsApp" title="WhatsApp">
+        <span class="social-icone-texto" aria-hidden="true"><svg viewBox="0 0 24 24" role="img"><path d="M20.5 3.5A11.1 11.1 0 0 0 3.1 16.9L2 22l5.2-1.1A11.1 11.1 0 0 0 20.5 3.5ZM12 20a8.1 8.1 0 0 1-4.1-1.1l-.3-.2-3.1.7.7-3-.2-.3A8.1 8.1 0 1 1 12 20Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.6 6.6 0 0 1-2-1.2 7.5 7.5 0 0 1-1.4-1.8c-.1-.2 0-.4.1-.5l.4-.5c.1-.2.2-.3.3-.5a.5.5 0 0 0 0-.5c-.1-.1-.6-1.4-.8-2-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 2.7 2.7 0 0 0-.8 2 4.7 4.7 0 0 0 1 2.5 10.8 10.8 0 0 0 4.1 3.7c1.5.6 2.1.7 2.8.6a2.4 2.4 0 0 0 1.6-1.1 2 2 0 0 0 .1-1.1c-.1 0-.2-.1-.4-.2Z"/></svg></span>
+      </a>
     </div>
   </div>
+
+  <section class="loja-identidade-card">
+    <div class="loja-avatar loja-avatar-sobreposto" id="lojaLogo">D</div>
+
+    <div class="loja-info loja-info-centralizada">
+      <h1 id="nomeLoja">Carregando...</h1>
+      <p id="descricaoLoja">Cardápio online</p>
+
+      <div class="loja-status-line loja-status-clean">
+        <span id="statusLoja" class="status-loja aberto">Aberta</span>
+        <span id="tempoEntrega">Carregando...</span>
+        <span id="tipoAtendimentoLoja">Entrega ou retirada</span>
+      </div>
+
+      <div class="loja-endereco-resumo" id="enderecoLojaTopo">📍 Endereço não informado</div>
+
+      <button type="button" class="btn-info-loja" id="abrirInfoLoja">ⓘ Informações</button>
+
+      <div class="loja-meta loja-meta-principal loja-meta-oculta">
+        <span id="pedidoMinimoLoja">Pedido mínimo: R$ 0,00</span>
+        <span id="taxaEntregaLoja">Entrega a combinar</span>
+      </div>
+    </div>
+  </section>
 </header>
 
-<main class="loja-container">
-  <section class="busca-cardapio">
+<main class="loja-container loja-container-app">
+  <section class="busca-cardapio busca-cardapio-app">
     <div class="campo-busca">
       <span>🔎</span>
       <input type="text" id="buscarProdutoLoja" placeholder="Buscar produto no cardápio...">
     </div>
   </section>
 
-  <section class="categorias-wrapper">
+  <section class="categorias-wrapper categorias-wrapper-app">
     <div class="categorias-loja" id="categoriasLoja"></div>
   </section>
 
@@ -83,10 +74,10 @@
       <p id="descricaoLojaRodape">Cardápio online seguro, rápido e fácil de usar.</p>
       <div class="footer-social" id="redesSociaisRodape">
         <a id="instagramRodape" href="#" target="_blank" rel="noopener" class="oculto social-instagram" aria-label="Instagram" title="Instagram">
-          <span class="social-icone-texto">Instagram</span>
+          <span class="social-icone-texto" aria-hidden="true"><svg viewBox="0 0 24 24" role="img"><path d="M7.8 2h8.4A5.8 5.8 0 0 1 22 7.8v8.4A5.8 5.8 0 0 1 16.2 22H7.8A5.8 5.8 0 0 1 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2Zm0 2A3.8 3.8 0 0 0 4 7.8v8.4A3.8 3.8 0 0 0 7.8 20h8.4a3.8 3.8 0 0 0 3.8-3.8V7.8A3.8 3.8 0 0 0 16.2 4H7.8Zm4.2 3.2A4.8 4.8 0 1 1 12 16.8 4.8 4.8 0 0 1 12 7.2Zm0 2A2.8 2.8 0 1 0 14.8 12 2.8 2.8 0 0 0 12 9.2Zm5-2.6a1.1 1.1 0 1 1-1.1 1.1A1.1 1.1 0 0 1 17 6.6Z"/></svg></span>
         </a>
         <a id="whatsappRodape" href="#" target="_blank" rel="noopener" class="oculto social-whatsapp" aria-label="WhatsApp" title="WhatsApp">
-          <span class="social-icone-texto">WhatsApp</span>
+          <span class="social-icone-texto" aria-hidden="true"><svg viewBox="0 0 24 24" role="img"><path d="M20.5 3.5A11.1 11.1 0 0 0 3.1 16.9L2 22l5.2-1.1A11.1 11.1 0 0 0 20.5 3.5ZM12 20a8.1 8.1 0 0 1-4.1-1.1l-.3-.2-3.1.7.7-3-.2-.3A8.1 8.1 0 1 1 12 20Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.6 6.6 0 0 1-2-1.2 7.5 7.5 0 0 1-1.4-1.8c-.1-.2 0-.4.1-.5l.4-.5c.1-.2.2-.3.3-.5a.5.5 0 0 0 0-.5c-.1-.1-.6-1.4-.8-2-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 2.7 2.7 0 0 0-.8 2 4.7 4.7 0 0 0 1 2.5 10.8 10.8 0 0 0 4.1 3.7c1.5.6 2.1.7 2.8.6a2.4 2.4 0 0 0 1.6-1.1 2 2 0 0 0 .1-1.1c-.1 0-.2-.1-.4-.2Z"/></svg></span>
         </a>
       </div>
     </div>
@@ -128,6 +119,24 @@
     <span>Política de Privacidade • Termos de Uso</span>
   </div>
 </footer>
+
+<div id="modalInfoLoja" class="modal-produto oculto">
+  <div class="modal-produto-content modal-info-loja-content">
+    <button id="fecharInfoLoja" class="fechar-modal">×</button>
+    <h2>Informações da loja</h2>
+    <div class="info-loja-lista">
+      <p id="enderecoInfoLoja">📍 Endereço não informado</p>
+      <p id="telefoneLojaTopo">☎ Telefone não informado</p>
+      <p id="horarioLojaTopo">🕒 Atendimento online</p>
+      <p id="pedidoMinimoInfoLoja">🧾 Pedido mínimo: R$ 0,00</p>
+      <p id="taxaEntregaInfoLoja">🛵 Entrega a combinar</p>
+    </div>
+    <div class="info-loja-redes">
+      <a id="instagramInfoLoja" href="#" target="_blank" rel="noopener" class="oculto social-instagram">Instagram</a>
+      <a id="whatsappInfoLoja" href="#" target="_blank" rel="noopener" class="oculto social-whatsapp">WhatsApp</a>
+    </div>
+  </div>
+</div>
 
 <div id="modalProduto" class="modal-produto oculto">
   <div class="modal-produto-content modal-produto-app">
