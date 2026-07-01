@@ -2,13 +2,22 @@ const formConfiguracoes = document.getElementById("formConfiguracoes");
 const mensagemConfiguracoes = document.getElementById("mensagemConfiguracoes");
 const linkPublicoTexto = document.getElementById("linkPublicoTexto");
 const btnAbrirCardapio = document.getElementById("btnAbrirCardapio");
+const linkPublicoReal = document.getElementById("linkPublicoReal");
 const btnCopiarLinkLoja = document.getElementById("btnCopiarLinkLoja");
+const btnCompartilharLinkLoja = document.getElementById("btnCompartilharLinkLoja");
 const btnBaixarQrCode = document.getElementById("btnBaixarQrCode");
-const qrCodeCanvas = document.getElementById("qrCodeCanvas");
+const btnBaixarQrCodeModal = document.getElementById("btnBaixarQrCodeModal");
+const qrCodeImagem = document.getElementById("qrCodeImagem");
+const qrCodeModal = document.getElementById("qrCodeModal");
+const qrCodeModalImagem = document.getElementById("qrCodeModalImagem");
+const btnFecharQrModal = document.getElementById("btnFecharQrModal");
+const pedidosHojeResumo = document.getElementById("pedidosHojeResumo");
+const ultimoPedidoResumo = document.getElementById("ultimoPedidoResumo");
 
 let lojaAtual = null;
 let lojaSlugAtual = "";
 let linkPublicoAtual = "";
+let linkQrCodeAtual = "";
 
 async function carregarLojaDoUsuario() {
   const {
@@ -46,6 +55,33 @@ function montarLinkPublico(slug) {
   return `${urlAtual.origin}${caminhoBase}loja.html?loja=${encodeURIComponent(slug)}`;
 }
 
+function montarLinkBonito(slug) {
+  if (!slug) return "";
+  return `deliveryos.com/${slug}`;
+}
+
+function montarUrlQrCode(texto, tamanho = 320) {
+  if (!texto) return "";
+  return `https://api.qrserver.com/v1/create-qr-code/?size=${tamanho}x${tamanho}&margin=12&data=${encodeURIComponent(texto)}`;
+}
+
+function formatarDataPedido(dataISO) {
+  if (!dataISO) return "Nenhum pedido";
+
+  const data = new Date(dataISO);
+
+  if (Number.isNaN(data.getTime())) {
+    return "Data indisponível";
+  }
+
+  return data.toLocaleString("pt-BR", {
+    day: "2-digit",
+    month: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit"
+  });
+}
+
 function mostrarMensagemConfiguracoes(texto, tipo = "sucesso") {
   mensagemConfiguracoes.innerText = texto;
   mensagemConfiguracoes.style.color = tipo === "erro" ? "#dc2626" : "#047857";
@@ -54,12 +90,17 @@ function mostrarMensagemConfiguracoes(texto, tipo = "sucesso") {
 function atualizarLinkPublico(slug) {
   lojaSlugAtual = slug || "";
   linkPublicoAtual = montarLinkPublico(lojaSlugAtual);
+  linkQrCodeAtual = montarUrlQrCode(linkPublicoAtual, 420);
 
   if (!linkPublicoTexto) return;
 
   if (!linkPublicoAtual) {
-    linkPublicoTexto.innerText = "Link indisponível. Esta loja ainda não possui slug.";
+    linkPublicoTexto.innerText = "Link indisponível";
     linkPublicoTexto.removeAttribute("href");
+
+    if (linkPublicoReal) {
+      linkPublicoReal.innerText = "Esta loja ainda não possui slug.";
+    }
 
     if (btnAbrirCardapio) {
       btnAbrirCardapio.href = "#";
@@ -70,8 +111,12 @@ function atualizarLinkPublico(slug) {
     return;
   }
 
-  linkPublicoTexto.innerText = linkPublicoAtual;
+  linkPublicoTexto.innerText = montarLinkBonito(lojaSlugAtual);
   linkPublicoTexto.href = linkPublicoAtual;
+
+  if (linkPublicoReal) {
+    linkPublicoReal.innerText = linkPublicoAtual;
+  }
 
   if (btnAbrirCardapio) {
     btnAbrirCardapio.href = linkPublicoAtual;
@@ -97,105 +142,119 @@ async function copiarLinkPublico() {
 }
 
 function limparQrCode() {
-  if (!qrCodeCanvas) return;
-
-  const ctx = qrCodeCanvas.getContext("2d");
-  ctx.clearRect(0, 0, qrCodeCanvas.width, qrCodeCanvas.height);
-  ctx.fillStyle = "#ffffff";
-  ctx.fillRect(0, 0, qrCodeCanvas.width, qrCodeCanvas.height);
+  if (qrCodeImagem) qrCodeImagem.removeAttribute("src");
+  if (qrCodeModalImagem) qrCodeModalImagem.removeAttribute("src");
 }
 
 function gerarQrCode(texto) {
-  if (!qrCodeCanvas || !texto) return;
+  if (!texto) return;
 
-  const ctx = qrCodeCanvas.getContext("2d");
-  const tamanho = qrCodeCanvas.width;
-  const margem = 10;
-  const modulos = 29;
-  const tamanhoModulo = Math.floor((tamanho - margem * 2) / modulos);
-  const inicio = Math.floor((tamanho - tamanhoModulo * modulos) / 2);
+  linkQrCodeAtual = montarUrlQrCode(texto, 420);
 
-  ctx.fillStyle = "#ffffff";
-  ctx.fillRect(0, 0, tamanho, tamanho);
+  if (qrCodeImagem) {
+    qrCodeImagem.src = montarUrlQrCode(texto, 240);
+  }
 
-  const dados = gerarMatrizQrVisual(texto, modulos);
+  if (qrCodeModalImagem) {
+    qrCodeModalImagem.src = linkQrCodeAtual;
+  }
+}
 
-  ctx.fillStyle = "#111827";
+function abrirModalQrCode() {
+  if (!qrCodeModal || !linkPublicoAtual) return;
+  qrCodeModal.classList.add("ativo");
+}
 
-  for (let linha = 0; linha < modulos; linha++) {
-    for (let coluna = 0; coluna < modulos; coluna++) {
-      if (dados[linha][coluna]) {
-        ctx.fillRect(
-          inicio + coluna * tamanhoModulo,
-          inicio + linha * tamanhoModulo,
-          tamanhoModulo,
-          tamanhoModulo
-        );
-      }
+function fecharModalQrCode() {
+  if (!qrCodeModal) return;
+  qrCodeModal.classList.remove("ativo");
+}
+
+async function carregarResumoPedidosLoja() {
+  if (!lojaAtual) return;
+
+  try {
+    const inicioHoje = new Date();
+    inicioHoje.setHours(0, 0, 0, 0);
+
+    const { data, error } = await supabaseClient
+      .from("pedidos")
+      .select("id, created_at")
+      .eq("loja_id", lojaAtual)
+      .gte("created_at", inicioHoje.toISOString())
+      .order("created_at", { ascending: false })
+      .limit(100);
+
+    if (error) {
+      console.warn("Não foi possível carregar o resumo de pedidos.", error);
+      return;
     }
-  }
 
-  desenharMarcadorQr(ctx, inicio, inicio, tamanhoModulo);
-  desenharMarcadorQr(ctx, inicio + (modulos - 7) * tamanhoModulo, inicio, tamanhoModulo);
-  desenharMarcadorQr(ctx, inicio, inicio + (modulos - 7) * tamanhoModulo, tamanhoModulo);
-}
-
-function gerarMatrizQrVisual(texto, modulos) {
-  const matriz = Array.from({ length: modulos }, () => Array(modulos).fill(false));
-  let hash = 0;
-
-  for (let i = 0; i < texto.length; i++) {
-    hash = ((hash << 5) - hash + texto.charCodeAt(i)) | 0;
-  }
-
-  for (let linha = 0; linha < modulos; linha++) {
-    for (let coluna = 0; coluna < modulos; coluna++) {
-      if (estaAreaMarcadorQr(linha, coluna, modulos)) continue;
-
-      const valor = Math.abs(
-        Math.sin((linha + 1) * 12.9898 + (coluna + 1) * 78.233 + hash) * 43758.5453
-      );
-
-      matriz[linha][coluna] = valor % 1 > 0.52;
+    if (pedidosHojeResumo) {
+      pedidosHojeResumo.innerText = String(data?.length || 0);
     }
+
+    if (ultimoPedidoResumo) {
+      ultimoPedidoResumo.innerText = data && data.length > 0
+        ? formatarDataPedido(data[0].created_at)
+        : "Nenhum hoje";
+    }
+  } catch (error) {
+    console.warn("Erro ao carregar resumo de pedidos.", error);
   }
-
-  return matriz;
-}
-
-function estaAreaMarcadorQr(linha, coluna, modulos) {
-  const noTopoEsquerda = linha < 8 && coluna < 8;
-  const noTopoDireita = linha < 8 && coluna >= modulos - 8;
-  const noBaixoEsquerda = linha >= modulos - 8 && coluna < 8;
-
-  return noTopoEsquerda || noTopoDireita || noBaixoEsquerda;
-}
-
-function desenharMarcadorQr(ctx, x, y, tamanhoModulo) {
-  ctx.fillStyle = "#111827";
-  ctx.fillRect(x, y, tamanhoModulo * 7, tamanhoModulo * 7);
-
-  ctx.fillStyle = "#ffffff";
-  ctx.fillRect(x + tamanhoModulo, y + tamanhoModulo, tamanhoModulo * 5, tamanhoModulo * 5);
-
-  ctx.fillStyle = "#111827";
-  ctx.fillRect(x + tamanhoModulo * 2, y + tamanhoModulo * 2, tamanhoModulo * 3, tamanhoModulo * 3);
 }
 
 function baixarQrCode() {
-  if (!linkPublicoAtual || !qrCodeCanvas) {
+  if (!linkPublicoAtual) {
     mostrarMensagemConfiguracoes("QR Code indisponível.", "erro");
     return;
   }
 
-  const linkDownload = document.createElement("a");
   const nomeArquivo = lojaSlugAtual ? `qrcode-${lojaSlugAtual}.png` : "qrcode-cardapio.png";
+  const urlDownload = montarUrlQrCode(linkPublicoAtual, 800);
 
-  linkDownload.href = qrCodeCanvas.toDataURL("image/png");
+  const linkDownload = document.createElement("a");
+  linkDownload.href = urlDownload;
   linkDownload.download = nomeArquivo;
+  linkDownload.target = "_blank";
+  linkDownload.rel = "noopener";
+  document.body.appendChild(linkDownload);
   linkDownload.click();
+  linkDownload.remove();
 
-  mostrarMensagemConfiguracoes("QR Code baixado com sucesso!");
+  mostrarMensagemConfiguracoes("QR Code aberto para download.");
+}
+
+async function compartilharLinkPublico() {
+  if (!linkPublicoAtual) {
+    mostrarMensagemConfiguracoes("Link público indisponível.", "erro");
+    return;
+  }
+
+  const textoCompartilhar = `Acesse nosso cardápio online: ${linkPublicoAtual}`;
+
+  if (navigator.share) {
+    try {
+      await navigator.share({
+        title: "Cardápio online",
+        text: textoCompartilhar,
+        url: linkPublicoAtual
+      });
+      mostrarMensagemConfiguracoes("Link compartilhado com sucesso!");
+      return;
+    } catch (error) {
+      if (error?.name === "AbortError") return;
+      console.error(error);
+    }
+  }
+
+  try {
+    await navigator.clipboard.writeText(textoCompartilhar);
+    mostrarMensagemConfiguracoes("Texto de compartilhamento copiado com sucesso!");
+  } catch (error) {
+    console.error(error);
+    mostrarMensagemConfiguracoes("Não foi possível compartilhar automaticamente.", "erro");
+  }
 }
 
 async function carregarConfiguracoes() {
@@ -220,6 +279,7 @@ async function carregarConfiguracoes() {
   document.getElementById("lojaTempoEntrega").value = data.tempo_entrega_min || 30;
 
   atualizarLinkPublico(data.slug);
+  carregarResumoPedidosLoja();
 }
 
 formConfiguracoes.addEventListener("submit", async (e) => {
@@ -263,6 +323,31 @@ if (btnCopiarLinkLoja) {
 
 if (btnBaixarQrCode) {
   btnBaixarQrCode.addEventListener("click", baixarQrCode);
+}
+
+
+if (btnCompartilharLinkLoja) {
+  btnCompartilharLinkLoja.addEventListener("click", compartilharLinkPublico);
+}
+
+if (qrCodeImagem) {
+  qrCodeImagem.addEventListener("click", abrirModalQrCode);
+}
+
+if (btnFecharQrModal) {
+  btnFecharQrModal.addEventListener("click", fecharModalQrCode);
+}
+
+if (btnBaixarQrCodeModal) {
+  btnBaixarQrCodeModal.addEventListener("click", baixarQrCode);
+}
+
+if (qrCodeModal) {
+  qrCodeModal.addEventListener("click", (event) => {
+    if (event.target === qrCodeModal) {
+      fecharModalQrCode();
+    }
+  });
 }
 
 carregarLojaDoUsuario();
