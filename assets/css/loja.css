@@ -2455,3 +2455,216 @@ button {
     font-size: 14px !important;
   }
 }
+
+/* =========================================================
+   AJUSTE FINAL - CARDÁPIO SEM SOBREPOSIÇÃO AO ROLAR
+   Objetivo: comportamento mais limpo como OlaClick.
+   - Busca e categorias não cobrem os produtos no desktop.
+   - No mobile, categorias ficam em fluxo normal e sem invadir cards.
+   - Produtos sempre começam abaixo da navegação.
+========================================================= */
+
+/* Desktop/tablet: remove efeito flutuante que sobrepunha produtos */
+@media (min-width: 769px) {
+  .loja-container,
+  .loja-container-app {
+    position: relative !important;
+    max-width: 1180px !important;
+    margin: 0 auto !important;
+    padding: 32px 20px 70px !important;
+    overflow: visible !important;
+  }
+
+  .busca-cardapio,
+  .busca-cardapio-app {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    z-index: 1 !important;
+    max-width: 860px !important;
+    margin: 0 auto 18px !important;
+    padding: 0 !important;
+    transform: none !important;
+  }
+
+  .categorias-wrapper,
+  .categorias-wrapper-app {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    z-index: 1 !important;
+    max-width: 860px !important;
+    margin: 0 auto 28px !important;
+    padding: 0 0 14px !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    transform: none !important;
+    overflow: visible !important;
+  }
+
+  .categorias-loja {
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 18px !important;
+    padding: 0 !important;
+    overflow-x: auto !important;
+    overflow-y: visible !important;
+    border-bottom: 1px solid #e5e7eb !important;
+    scrollbar-width: none !important;
+  }
+
+  .categorias-loja::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .categorias-loja button {
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    padding: 12px 0 15px !important;
+    min-height: auto !important;
+    color: #111827 !important;
+    font-size: 16px !important;
+    font-weight: 950 !important;
+    white-space: nowrap !important;
+  }
+
+  .categorias-loja button.active,
+  .categorias-loja button:hover {
+    color: var(--cor-primaria) !important;
+    background: transparent !important;
+    transform: none !important;
+  }
+
+  .categorias-loja button::after {
+    content: "" !important;
+    position: absolute !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: -1px !important;
+    height: 3px !important;
+    border-radius: 999px !important;
+    background: transparent !important;
+  }
+
+  .categorias-loja button.active::after,
+  .categorias-loja button:hover::after {
+    background: var(--cor-primaria) !important;
+  }
+
+  .produtos-loja {
+    position: relative !important;
+    z-index: 0 !important;
+    clear: both !important;
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+}
+
+/* Mobile: layout em fluxo normal, sem barra cobrindo produto */
+@media (max-width: 768px) {
+  .loja-container,
+  .loja-container-app {
+    position: relative !important;
+    margin-top: 0 !important;
+    padding: 20px 16px 96px !important;
+    overflow: visible !important;
+    background: #ffffff !important;
+  }
+
+  .busca-cardapio,
+  .busca-cardapio-app {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    z-index: 2 !important;
+    width: 100% !important;
+    margin: 0 0 18px !important;
+    padding: 0 !important;
+    transform: none !important;
+  }
+
+  .categorias-wrapper,
+  .categorias-wrapper-app {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 20 !important;
+    width: calc(100% + 32px) !important;
+    margin: 0 -16px 18px !important;
+    padding: 0 16px 8px !important;
+    background: rgba(255,255,255,0.96) !important;
+    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.05) !important;
+    backdrop-filter: blur(12px) !important;
+    overflow: hidden !important;
+  }
+
+  .categorias-loja {
+    display: flex !important;
+    align-items: center !important;
+    gap: 26px !important;
+    padding: 0 !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    border-bottom: 1px solid #edf0f4 !important;
+    scrollbar-width: none !important;
+  }
+
+  .categorias-loja::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  .categorias-loja button {
+    position: relative !important;
+    flex: 0 0 auto !important;
+    min-width: max-content !important;
+    min-height: auto !important;
+    padding: 13px 0 14px !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    color: #111827 !important;
+    font-size: 17px !important;
+    font-weight: 950 !important;
+  }
+
+  .categorias-loja button.active,
+  .categorias-loja button:hover {
+    color: var(--cor-primaria) !important;
+    background: transparent !important;
+    transform: none !important;
+  }
+
+  .categorias-loja button::after {
+    content: "" !important;
+    position: absolute !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: -1px !important;
+    height: 3px !important;
+    border-radius: 999px !important;
+    background: transparent !important;
+  }
+
+  .categorias-loja button.active::after,
+  .categorias-loja button:hover::after {
+    background: var(--cor-primaria) !important;
+  }
+
+  .produtos-loja {
+    position: relative !important;
+    z-index: 1 !important;
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+
+  .produto-card:first-child {
+    margin-top: 0 !important;
+  }
+}
