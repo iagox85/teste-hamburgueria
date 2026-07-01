@@ -1375,7 +1375,7 @@ Entrega: ${
 }
 
 async function tentarSalvarPedidoNoBanco() {
-  if (!window.supabaseClient) return;
+  if (typeof supabaseClient === "undefined") return;
 
   const loja = window.DeliveryOSLojaAtual || {};
   const itens = obterItensCheckout();
@@ -1383,20 +1383,29 @@ async function tentarSalvarPedidoNoBanco() {
   if (!loja.id || !itens.length) return;
 
   try {
-    await supabaseClient.from("pedidos").insert({
+    const enderecoPedido = checkoutDados.tipoRecebimento === "delivery" ? {
+      cep: checkoutDados.cep,
+      rua: checkoutDados.rua,
+      numero: checkoutDados.numero,
+      complemento: checkoutDados.complemento,
+      bairro: checkoutDados.bairro,
+      cidade: checkoutDados.cidade,
+      referencia: checkoutDados.referencia
+    } : null;
+
+    const pedidoPayload = {
       loja_id: loja.id,
       cliente_nome: checkoutDados.nomeCliente,
+
+      // Campos novos usados pelo DeliveryOS
       cliente_whatsapp: checkoutDados.telefoneCliente,
       tipo_recebimento: checkoutDados.tipoRecebimento,
-      endereco: checkoutDados.tipoRecebimento === "delivery" ? {
-        cep: checkoutDados.cep,
-        rua: checkoutDados.rua,
-        numero: checkoutDados.numero,
-        complemento: checkoutDados.complemento,
-        bairro: checkoutDados.bairro,
-        cidade: checkoutDados.cidade,
-        referencia: checkoutDados.referencia
-      } : null,
+
+      // Campos antigos que já existem na sua tabela atual
+      cliente_telefone: checkoutDados.telefoneCliente,
+      tipo_entrega: checkoutDados.tipoRecebimento,
+
+      endereco: enderecoPedido,
       pagamento: checkoutDados.pagamento,
       troco_para: checkoutDados.trocoPara ? Number(checkoutDados.trocoPara) : null,
       observacao: checkoutDados.observacaoPedido,
@@ -1405,9 +1414,17 @@ async function tentarSalvarPedidoNoBanco() {
       taxa_entrega: obterTaxaEntregaCheckout(),
       total: calcularTotalCheckout(),
       status: "novo"
-    });
+    };
+
+    const { error } = await supabaseClient
+      .from("pedidos")
+      .insert(pedidoPayload);
+
+    if (error) {
+      throw error;
+    }
   } catch (error) {
-    console.warn("Pedido não foi salvo no banco. O envio por WhatsApp continuará funcionando.", error);
+    console.error("Pedido não foi salvo no banco. O envio por WhatsApp continuará funcionando.", error);
   }
 }
 
