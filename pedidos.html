@@ -23,7 +23,6 @@
 
       <div class="page-hero-actions pedidos-actions">
         <button id="btnAtualizarPedidos" type="button" class="btn-admin-secondary">Atualizar</button>
-        <button id="btnSomPedidos" type="button" class="btn-admin-secondary">🔔 Som ligado</button>
       </div>
     </section>
 
@@ -79,9 +78,6 @@
   </main>
 </div>
 
-<audio id="audioPedidoNovo" preload="auto">
-  <source src="data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAESsAACJWAAACABAAZGF0YQAAAAA=" type="audio/wav">
-</audio>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="assets/js/config.js"></script>
@@ -89,6 +85,8 @@
 <script src="assets/js/admin.js"></script>
 <script src="assets/js/sidebar.js"></script>
 <script src="assets/js/topbar.js"></script>
+<script src="assets/js/deliveryos-ui.js"></script>
+<script src="assets/js/deliveryos-notificacoes.js"></script>
 
 <script>
   carregarSidebar("pedidos");
