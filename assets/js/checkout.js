@@ -114,6 +114,17 @@ function salvarDadosCheckout() {
   localStorage.setItem(obterChaveCheckout(), JSON.stringify(checkoutDados));
 }
 
+function limparDadosCheckoutAposPedido() {
+  try {
+    localStorage.removeItem(obterChaveCheckout());
+  } catch (error) {
+    console.error("Erro ao limpar dados do checkout:", error);
+  }
+
+  checkoutDados = carregarDadosCheckout();
+  checkoutEtapaAtual = 1;
+}
+
 function obterItensCheckout() {
   if (!window.DeliveryOSCarrinho || typeof window.DeliveryOSCarrinho.listar !== "function") {
     return [];
@@ -1485,10 +1496,17 @@ async function confirmarPedidoCheckout() {
 
   window.open(link, "_blank");
 
-  if (window.DeliveryOSCarrinho && typeof window.DeliveryOSCarrinho.limpar === "function") {
-    window.DeliveryOSCarrinho.limpar();
+  if (window.DeliveryOSCarrinho) {
+    if (typeof window.DeliveryOSCarrinho.limparAposPedido === "function") {
+      window.DeliveryOSCarrinho.limparAposPedido();
+    } else if (typeof window.DeliveryOSCarrinho.limparSilencioso === "function") {
+      window.DeliveryOSCarrinho.limparSilencioso();
+    } else if (typeof window.DeliveryOSCarrinho.limpar === "function") {
+      window.DeliveryOSCarrinho.limpar();
+    }
   }
 
+  limparDadosCheckoutAposPedido();
   fecharCheckout();
 
   if (botao) {
