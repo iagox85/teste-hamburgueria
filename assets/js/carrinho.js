@@ -12,6 +12,7 @@ const CHAVE_CARRINHO = "deliveryos_carrinho";
 
 let carrinho = carregarCarrinho();
 let ultimaQuantidadeCarrinho = calcularQuantidadeCarrinho();
+let itemObservacaoEmEdicao = null;
 
 function formatarMoeda(valor) {
   return Number(valor || 0).toLocaleString("pt-BR", {
@@ -337,6 +338,67 @@ function instalarEstilosCarrinho() {
       font-size: 12px;
       margin-top: 7px;
     }
+
+    .observacao-editor {
+      width: 100%;
+      margin-top: 9px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .observacao-editor textarea {
+      width: 100%;
+      min-height: 72px;
+      resize: vertical;
+      border: 1px solid #e5e7eb;
+      background: #f9fafb;
+      border-radius: 14px;
+      padding: 11px 12px;
+      outline: none;
+      color: #111827;
+      font-size: 13px;
+      line-height: 1.4;
+      font-family: inherit;
+      transition: border 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    }
+
+    .observacao-editor textarea:focus {
+      border-color: #ef4444;
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);
+    }
+
+    .observacao-editor-acoes {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+    }
+
+    .observacao-editor-acoes button {
+      border: none;
+      border-radius: 999px;
+      padding: 9px 13px;
+      font-size: 12px;
+      font-weight: 900;
+      cursor: pointer;
+      transition: transform 0.12s ease, opacity 0.12s ease, background 0.12s ease;
+    }
+
+    .observacao-editor-acoes button:active {
+      transform: scale(0.97);
+    }
+
+    .btn-salvar-observacao {
+      background: #ef4444;
+      color: #ffffff;
+    }
+
+    .btn-cancelar-observacao {
+      background: #f3f4f6;
+      color: #374151;
+    }
+
 
     .item-carrinho-acoes {
       display: flex;
@@ -717,18 +779,36 @@ function editarObservacaoItem(itemId) {
 
   if (!item) return;
 
-  const novaObservacao = prompt(
-    "Observação do item:",
-    item.observacao || ""
-  );
+  itemObservacaoEmEdicao = itemId;
+  atualizarCarrinho(false);
 
-  if (novaObservacao === null) return;
+  setTimeout(() => {
+    const campo = document.getElementById(`observacaoItem-${itemId}`);
 
-  item.observacao = novaObservacao.trim();
+    if (campo) {
+      campo.focus();
+      campo.setSelectionRange(campo.value.length, campo.value.length);
+    }
+  }, 50);
+}
+
+function salvarObservacaoItem(itemId) {
+  const item = carrinho.find((produto) => produto.id === itemId);
+  const campo = document.getElementById(`observacaoItem-${itemId}`);
+
+  if (!item || !campo) return;
+
+  item.observacao = campo.value.trim();
   item.subtotal = calcularSubtotalItem(item);
+  itemObservacaoEmEdicao = null;
 
   salvarCarrinho();
   atualizarCarrinho(true);
+}
+
+function cancelarEdicaoObservacao() {
+  itemObservacaoEmEdicao = null;
+  atualizarCarrinho(false);
 }
 
 function limparCarrinho() {
@@ -778,9 +858,25 @@ function renderizarItensCarrinho(animar = false) {
       `
       : `<span class="sem-adicionais-carrinho">Sem adicionais</span>`;
 
-    const observacaoHTML = item.observacao
-      ? `<span class="observacao-tag">📝 ${escaparHTML(item.observacao)}</span>`
-      : `<p class="observacao-vazia">Sem observação</p>`;
+    const observacaoHTML = itemObservacaoEmEdicao === item.id
+      ? `
+        <div class="observacao-editor">
+          <textarea id="observacaoItem-${item.id}" placeholder="Ex: sem cebola, molho separado, ponto da carne...">${escaparHTML(item.observacao || "")}</textarea>
+
+          <div class="observacao-editor-acoes">
+            <button class="btn-salvar-observacao" onclick="DeliveryOSCarrinho.salvarObservacao('${item.id}')">
+              Salvar observação
+            </button>
+
+            <button class="btn-cancelar-observacao" onclick="DeliveryOSCarrinho.cancelarObservacao()">
+              Cancelar
+            </button>
+          </div>
+        </div>
+      `
+      : item.observacao
+        ? `<span class="observacao-tag">📝 ${escaparHTML(item.observacao)}</span>`
+        : `<p class="observacao-vazia">Sem observação</p>`;
 
     const quantidade = Number(item.quantidade || 1);
 
@@ -980,6 +1076,8 @@ window.DeliveryOSCarrinho = {
   remover: removerDoCarrinho,
   alterarQuantidade: alterarQuantidadeItem,
   editarObservacao: editarObservacaoItem,
+  salvarObservacao: salvarObservacaoItem,
+  cancelarObservacao: cancelarEdicaoObservacao,
   limpar: limparCarrinho,
   abrir: abrirModalCarrinho,
   atualizar: atualizarCarrinho,
