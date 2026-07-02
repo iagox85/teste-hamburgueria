@@ -1,0 +1,741 @@
+/* ============================================================
+   DELIVERYOS MOBILE v1
+   Regras exclusivas para celular. Desktop permanece intacto.
+   ============================================================ */
+
+@media (max-width: 760px) {
+  html,
+  body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  body {
+    background:
+      radial-gradient(circle at top right, rgba(239, 68, 68, 0.08), transparent 34%),
+      linear-gradient(180deg, #fbfcff 0%, #f4f7fb 100%);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  .admin-layout {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .content {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    padding: 14px 14px 28px !important;
+    gap: 16px !important;
+  }
+
+  /* Topbar mobile estilo app */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 80;
+    width: calc(100% + 28px);
+    margin: -14px -14px 16px !important;
+    padding: 14px !important;
+    min-height: 68px;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 12px !important;
+    background: #0f172a;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.14);
+  }
+
+  .topbar > div:first-child {
+    display: none !important;
+  }
+
+  .mobile-menu-button {
+    width: 44px;
+    height: 44px;
+    flex: 0 0 auto;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    font-size: 22px;
+    box-shadow: none;
+  }
+
+  .mobile-topbar-brand {
+    display: block !important;
+    color: #ffffff;
+    font-size: 21px;
+    font-weight: 950;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+
+  .mobile-topbar-brand::first-letter {
+    color: var(--primary);
+  }
+
+  .topbar-actions {
+    margin-left: auto;
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+  }
+
+  .topbar-actions .notification,
+  .topbar-actions #sair {
+    height: 40px !important;
+    border-radius: 13px !important;
+    box-shadow: none !important;
+  }
+
+  .topbar-actions .notification {
+    width: 40px !important;
+    background: rgba(255, 255, 255, 0.10) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  }
+
+  .topbar-actions #sair {
+    padding: 0 14px !important;
+    font-size: 13px !important;
+  }
+
+  /* Drawer mobile */
+  .mobile-menu-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 998;
+    display: none;
+    background: rgba(15, 23, 42, 0.58);
+    backdrop-filter: blur(4px);
+  }
+
+  body.mobile-menu-open .mobile-menu-backdrop {
+    display: block;
+  }
+
+  .sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    z-index: 999 !important;
+    width: min(86vw, 340px) !important;
+    height: 100dvh !important;
+    padding: 22px 16px !important;
+    transform: translateX(-105%);
+    transition: transform 0.24s ease;
+    overflow-y: auto;
+    border-radius: 0 24px 24px 0;
+    box-shadow: 26px 0 70px rgba(15, 23, 42, 0.34);
+  }
+
+  body.mobile-menu-open .sidebar {
+    transform: translateX(0);
+  }
+
+  .sidebar h2 {
+    margin: 0 58px 24px 0 !important;
+    font-size: 25px !important;
+  }
+
+  .sidebar-close-mobile {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 42px;
+    height: 42px;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    font-size: 24px;
+  }
+
+  .sidebar nav {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+    overflow: visible !important;
+    padding: 0 !important;
+  }
+
+  .sidebar a {
+    width: 100% !important;
+    min-height: 52px !important;
+    display: flex !important;
+    align-items: center !important;
+    padding: 0 14px !important;
+    border-radius: 16px !important;
+    font-size: 15px !important;
+    white-space: normal !important;
+  }
+
+  /* Hero mobile: compacto, sem sensação de desktop reduzido */
+  .page-hero,
+  .page-hero.page-hero-standard,
+  .produtos-hero-standard {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    display: block !important;
+    padding: 18px !important;
+    border-radius: 22px !important;
+    overflow: hidden !important;
+  }
+
+  .page-hero.page-hero-standard .page-hero-main,
+  .page-hero-main {
+    width: 100% !important;
+    min-width: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+  }
+
+  .page-hero-standard .page-hero-title-row,
+  .page-hero-title-row {
+    width: 100% !important;
+    display: block !important;
+    margin: 0 !important;
+  }
+
+  .page-hero-standard h2,
+  .page-hero h2 {
+    max-width: 100% !important;
+    margin: 0 0 8px !important;
+    font-size: 30px !important;
+    line-height: 1.04 !important;
+    letter-spacing: -0.055em !important;
+    white-space: normal !important;
+  }
+
+  .page-hero-standard p,
+  .page-hero p {
+    max-width: 100% !important;
+    margin: 0 !important;
+    font-size: 14px !important;
+    line-height: 1.45 !important;
+  }
+
+  .page-hero-standard .page-hero-actions,
+  .page-hero-actions {
+    position: static !important;
+    transform: none !important;
+    width: 100% !important;
+    margin: 16px 0 0 !important;
+    display: flex !important;
+    justify-content: stretch !important;
+    align-items: stretch !important;
+  }
+
+  .page-hero-standard .page-hero-actions .btn-admin-primary,
+  .page-hero-standard .page-hero-actions .btn-admin-secondary,
+  .page-hero-standard .page-hero-actions button,
+  .page-hero-standard .page-hero-actions a,
+  .page-hero-actions button,
+  .page-hero-actions a {
+    width: 100% !important;
+    min-height: 50px !important;
+    padding: 0 16px !important;
+    border-radius: 16px !important;
+    font-size: 14px !important;
+    justify-content: center !important;
+    white-space: nowrap !important;
+  }
+
+  /* Cards e painéis */
+  .cards,
+  .dashboard-grid,
+  .config-grid-2,
+  .config-grid-3,
+  .config-grid-4,
+  .produtos-summary-grid,
+  .produtos-workspace {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  .card,
+  .panel,
+  .admin-list-panel,
+  .produtos-main-panel,
+  .produtos-side-card,
+  .config-section-card {
+    width: 100% !important;
+    min-width: 0 !important;
+    padding: 16px !important;
+    border-radius: 20px !important;
+  }
+
+  .card {
+    min-height: 92px !important;
+  }
+
+  .card strong {
+    font-size: 28px !important;
+  }
+
+  .panel-header,
+  .admin-list-head,
+  .produtos-panel-header,
+  .config-section-header {
+    display: block !important;
+  }
+
+  /* Listas/filtros sem quebrar largura */
+  .pedidos-filtros,
+  .config-nav,
+  .produtos-shortcuts {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    display: flex !important;
+    gap: 8px !important;
+    padding-bottom: 4px !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .pedidos-filtros button,
+  .config-nav a,
+  .produtos-shortcuts a {
+    min-height: 42px !important;
+    white-space: nowrap !important;
+    flex: 0 0 auto !important;
+  }
+
+  .config-shell {
+    display: block !important;
+  }
+
+  .config-side {
+    position: static !important;
+    min-height: 0 !important;
+    padding: 16px !important;
+    border-right: 0 !important;
+    border-bottom: 1px solid var(--border) !important;
+    border-radius: 20px 20px 0 0 !important;
+  }
+
+  .config-main {
+    padding: 16px !important;
+  }
+
+  .config-top-actions,
+  .link-publico-acoes,
+  .qr-modal-acoes,
+  .produtos-modal-footer,
+  .produtos-confirm-actions {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  .config-top-actions a,
+  .config-top-actions button,
+  .produtos-modal-footer button,
+  .produtos-confirm-actions button {
+    width: 100% !important;
+    min-height: 50px !important;
+  }
+
+  input,
+  select,
+  textarea,
+  .toolbar input,
+  .form-modal input,
+  .form-modal textarea,
+  .form-modal select,
+  .config-field input,
+  .config-field textarea,
+  .config-field select,
+  .produtos-search-wrap,
+  .produtos-field input,
+  .produtos-field textarea,
+  .produtos-field select {
+    font-size: 16px !important;
+    min-height: 50px !important;
+  }
+
+  /* Modal genérico em tela cheia no celular */
+  .modal {
+    align-items: stretch !important;
+    justify-content: stretch !important;
+    padding: 0 !important;
+  }
+
+  .modal-content {
+    width: 100vw !important;
+    max-width: none !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+  }
+
+  /* Modal de produto: tela de app com área rolável + rodapé fixo */
+  .produtos-modal .modal-content,
+  .produtos-modal-content,
+  .produtos-modal-shell,
+  .produtos-modal-panel {
+    width: 100vw !important;
+    max-width: none !important;
+    height: 100dvh !important;
+    max-height: 100dvh !important;
+    min-height: 0 !important;
+    border-radius: 0 !important;
+  }
+
+  .produtos-modal-panel {
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+  }
+
+  .produtos-modal-header {
+    flex: 0 0 auto !important;
+    padding: 18px 16px 14px !important;
+    background: #ffffff !important;
+    border-bottom: 1px solid var(--border) !important;
+  }
+
+  .produtos-modal-header span {
+    font-size: 11px !important;
+  }
+
+  .produtos-modal-header h2 {
+    font-size: 24px !important;
+  }
+
+  #fecharModalProduto {
+    width: 48px !important;
+    height: 48px !important;
+    border-radius: 16px !important;
+  }
+
+  .produtos-form {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+  }
+
+  .produtos-form-grid {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+    padding: 16px 14px 18px !important;
+  }
+
+  .produtos-form-section {
+    padding: 16px !important;
+    border-radius: 20px !important;
+  }
+
+  .produtos-section-title {
+    gap: 12px !important;
+  }
+
+  .produtos-section-title h3 {
+    font-size: 19px !important;
+  }
+
+  .produtos-section-title p {
+    font-size: 13px !important;
+  }
+
+  .produtos-form-row {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  .produtos-image-section {
+    position: static !important;
+  }
+
+  .produtos-image-box .preview-produto-imagem {
+    height: 220px !important;
+    min-height: 220px !important;
+  }
+
+  .produtos-modal-footer {
+    position: static !important;
+    flex: 0 0 auto !important;
+    padding: 12px 14px calc(12px + env(safe-area-inset-bottom)) !important;
+    background: #ffffff !important;
+    border-top: 1px solid var(--border) !important;
+    box-shadow: 0 -14px 34px rgba(15, 23, 42, 0.10) !important;
+  }
+
+  /* Confirmação de exclusão: não ocupar uma tela vazia enorme */
+  .produtos-confirm-modal {
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 14px !important;
+  }
+
+  .produtos-confirm-box {
+    width: 100% !important;
+    max-width: 360px !important;
+    min-height: 0 !important;
+    padding: 22px !important;
+    border-radius: 24px !important;
+  }
+
+  .produtos-confirm-icon {
+    width: 58px !important;
+    height: 58px !important;
+    margin-bottom: 18px !important;
+  }
+
+  /* Evita qualquer componente estourando a tela */
+  .produtos-main-panel,
+  .produtos-side-stack,
+  .produtos-lista,
+  .produto-admin-item,
+  .produto-admin-info,
+  .produto-acoes,
+  .admin-list-panel,
+  .pedidos-panel,
+  .config-premium-page,
+  .config-shell,
+  .config-main,
+  .config-section-card,
+  .link-publico-loja,
+  .upload-imagem-grid {
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+}
+
+@media (min-width: 761px) {
+  .mobile-menu-button,
+  .mobile-topbar-brand,
+  .sidebar-close-mobile,
+  .mobile-menu-backdrop {
+    display: none !important;
+  }
+}
+
+@media (max-width: 380px) {
+  .content {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+
+  .topbar {
+    width: calc(100% + 24px);
+    margin-left: -12px !important;
+    margin-right: -12px !important;
+  }
+
+  .page-hero-standard h2,
+  .page-hero h2 {
+    font-size: 27px !important;
+  }
+
+  .mobile-topbar-brand {
+    font-size: 19px;
+  }
+}
+
+
+/* ============================================================
+   DELIVERYOS MOBILE v3 - ajustes de topo e dashboard
+   Mantém o desktop intacto e corrige o visual de app no celular.
+   ============================================================ */
+
+@media (max-width: 760px) {
+  /* Topo compacto em uma única linha */
+  .topbar,
+  .dashboard-topbar {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 80 !important;
+    width: calc(100% + 28px) !important;
+    margin: -14px -14px 16px !important;
+    padding: 12px 14px !important;
+    min-height: 68px !important;
+    height: auto !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 10px !important;
+    background: #0f172a !important;
+    border-radius: 0 !important;
+    border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+    box-shadow: 0 12px 30px rgba(15,23,42,0.14) !important;
+  }
+
+  /* Esconde título/subtítulo desktop dentro do topo mobile */
+  .topbar > div:not(.topbar-actions),
+  .dashboard-topbar > div:not(.topbar-actions) {
+    display: none !important;
+  }
+
+  .mobile-menu-button {
+    order: 1 !important;
+    width: 42px !important;
+    height: 42px !important;
+    min-width: 42px !important;
+    margin: 0 !important;
+  }
+
+  .mobile-topbar-brand {
+    order: 2 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    color: #ffffff !important;
+    font-size: 21px !important;
+    font-weight: 950 !important;
+    letter-spacing: -0.045em !important;
+    margin: 0 !important;
+    line-height: 1 !important;
+  }
+
+  .topbar-actions {
+    order: 3 !important;
+    margin-left: auto !important;
+    width: auto !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 8px !important;
+  }
+
+  .dashboard-topbar .dashboard-action-link {
+    display: none !important;
+  }
+
+  .topbar-actions .notification,
+  .topbar-actions #sair,
+  .dashboard-topbar #sair {
+    min-width: 0 !important;
+    height: 40px !important;
+    max-height: 40px !important;
+    border-radius: 14px !important;
+    flex: 0 0 auto !important;
+  }
+
+  .topbar-actions #sair,
+  .dashboard-topbar #sair {
+    padding: 0 14px !important;
+    font-size: 13px !important;
+  }
+
+  /* Hero mobile mais equilibrado; sem ocupar a tela como desktop reduzido */
+  .page-hero,
+  .page-hero.page-hero-standard,
+  .dashboard-hero-standard,
+  .produtos-hero-standard {
+    padding: 18px !important;
+    border-radius: 22px !important;
+    margin: 0 0 16px !important;
+  }
+
+  .page-hero-standard h2,
+  .page-hero h2,
+  .dashboard-hero-standard h2 {
+    font-size: 29px !important;
+    line-height: 1.08 !important;
+    margin-bottom: 8px !important;
+  }
+
+  .page-hero-standard p,
+  .page-hero p,
+  .dashboard-hero-standard p {
+    font-size: 14px !important;
+    line-height: 1.45 !important;
+  }
+
+  .page-hero-standard .page-hero-actions,
+  .page-hero-actions {
+    margin-top: 14px !important;
+  }
+
+  .page-hero-standard .page-hero-actions .btn-admin-primary,
+  .page-hero-standard .page-hero-actions .btn-admin-secondary,
+  .page-hero-standard .page-hero-actions button,
+  .page-hero-standard .page-hero-actions a,
+  .page-hero-actions button,
+  .page-hero-actions a {
+    min-height: 48px !important;
+    border-radius: 15px !important;
+  }
+
+  /* Dashboard: evita duplicidade no topo e deixa os cards respirarem */
+  .dashboard-page .content,
+  .dashboard-page.content {
+    gap: 14px !important;
+  }
+
+  .dashboard-hidden-status {
+    display: none !important;
+  }
+
+  .dashboard-metrics-grid,
+  .dashboard-main-grid,
+  .dashboard-main-grid-polish {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  .dashboard-metric-card,
+  .dashboard-panel {
+    width: 100% !important;
+    min-width: 0 !important;
+    border-radius: 20px !important;
+  }
+
+  .dashboard-metric-card {
+    min-height: 112px !important;
+    padding: 16px !important;
+  }
+
+  .dashboard-metric-card strong {
+    font-size: 30px !important;
+    line-height: 1.05 !important;
+  }
+
+  /* Configurações: melhora as abas no celular sem mudar lógica */
+  .config-nav {
+    gap: 8px !important;
+    padding: 0 0 6px !important;
+  }
+
+  .config-nav a {
+    min-height: 42px !important;
+    padding: 0 14px !important;
+    border-radius: 14px !important;
+    font-size: 13px !important;
+  }
+
+  /* Corrige botões que estavam parecendo blocos gigantes em confirmação */
+  .produtos-confirm-actions {
+    margin-top: 22px !important;
+  }
+
+  .produtos-confirm-actions button {
+    min-height: 52px !important;
+    border-radius: 16px !important;
+  }
+}

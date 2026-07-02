@@ -2,6 +2,7 @@ function carregarSidebar(paginaAtiva) {
   const sidebar = document.getElementById("sidebar");
 
   sidebar.innerHTML = `
+    <button type="button" class="sidebar-close-mobile" id="sidebarCloseMobile" aria-label="Fechar menu">×</button>
     <h2>DeliveryOS</h2>
 
     <nav>
@@ -15,4 +16,34 @@ function carregarSidebar(paginaAtiva) {
       <a href="configuracoes.html" class="${paginaAtiva === "configuracoes" ? "active" : ""}">⚙️ Configurações</a>
     </nav>
   `;
+
+  inicializarMenuMobile();
+}
+
+function inicializarMenuMobile() {
+  let backdrop = document.querySelector(".mobile-menu-backdrop");
+
+  if (!backdrop) {
+    backdrop = document.createElement("div");
+    backdrop.className = "mobile-menu-backdrop";
+    document.body.appendChild(backdrop);
+  }
+
+  const abrirMenu = () => document.body.classList.add("mobile-menu-open");
+  const fecharMenu = () => document.body.classList.remove("mobile-menu-open");
+
+  const botaoAbrir = document.getElementById("mobileMenuButton");
+  const botaoFechar = document.getElementById("sidebarCloseMobile");
+
+  if (botaoAbrir) botaoAbrir.onclick = abrirMenu;
+  if (botaoFechar) botaoFechar.onclick = fecharMenu;
+  backdrop.onclick = fecharMenu;
+
+  document.querySelectorAll("#sidebar a").forEach((link) => {
+    link.addEventListener("click", fecharMenu);
+  });
+
+  document.addEventListener("keydown", (evento) => {
+    if (evento.key === "Escape") fecharMenu();
+  }, { once: true });
 }

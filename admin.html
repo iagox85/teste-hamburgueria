@@ -6,6 +6,7 @@
   <title>Dashboard - DeliveryOS</title>
   <link rel="stylesheet" href="assets/css/admin.css?v=20260702tablesv1">
   <link rel="stylesheet" href="assets/css/pages/dashboard.css?v=20260702premiumv2">
+  <link rel="stylesheet" href="assets/css/mobile.css?v=20260702mobile2">
 </head>
 <body>
 
@@ -16,6 +17,8 @@
   <main class="content page-stack dashboard-page">
 
     <header class="topbar dashboard-topbar">
+      <button type="button" class="mobile-menu-button" id="mobileMenuButton" aria-label="Abrir menu">☰</button>
+      <strong class="mobile-topbar-brand">DeliveryOS</strong>
       <div>
         <span class="dashboard-kicker">Painel administrativo</span>
         <h1>Dashboard</h1>
@@ -183,7 +186,7 @@
 <script src="assets/js/deliveryos.js?v=20260701core1"></script>
 <script src="assets/js/admin.js"></script>
 <script src="assets/js/dashboard-data.js"></script>
-<script src="assets/js/sidebar.js"></script>
+<script src="assets/js/sidebar.js?v=20260702mobile2"></script>
 <script>
   carregarSidebar("dashboard");
 </script>
