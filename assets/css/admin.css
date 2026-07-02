@@ -2352,21 +2352,18 @@ button.salvando {
 
 .page-hero-standard .page-hero-main {
   width: 100%;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  grid-template-rows: auto auto;
-  align-items: center;
-  column-gap: 18px;
-  row-gap: 10px;
 }
 
 .page-hero-standard .page-hero-title-row {
-  display: contents;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  width: 100%;
+  margin-bottom: 10px;
 }
 
 .page-hero-standard h2 {
-  grid-column: 1;
-  grid-row: 1;
   margin: 0;
   color: #ffffff;
   font-size: clamp(28px, 3vw, 40px);
@@ -2376,8 +2373,6 @@ button.salvando {
 }
 
 .page-hero-standard p {
-  grid-column: 1;
-  grid-row: 2;
   margin: 0;
   max-width: 720px;
   color: rgba(255, 255, 255, 0.82);
@@ -2387,9 +2382,6 @@ button.salvando {
 }
 
 .page-hero-standard .page-hero-actions {
-  grid-column: 2;
-  grid-row: 1 / span 2;
-  align-self: center;
   margin-left: auto;
   display: flex;
   align-items: center;
@@ -2435,23 +2427,10 @@ button.salvando {
     border-radius: 22px;
   }
 
-  .page-hero-standard .page-hero-main {
-    display: block;
-  }
-
   .page-hero-standard .page-hero-title-row {
-    display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: 14px;
-    margin-bottom: 14px;
-  }
-
-  .page-hero-standard h2,
-  .page-hero-standard p,
-  .page-hero-standard .page-hero-actions {
-    grid-column: auto;
-    grid-row: auto;
   }
 
   .page-hero-standard h2 {
@@ -2473,5 +2452,229 @@ button.salvando {
   .page-hero-standard .page-hero-actions button,
   .page-hero-standard .page-hero-actions a {
     width: 100%;
+  }
+}
+
+/* ============================================================
+   DELIVERYOS DESIGN SYSTEM v1 - LISTAS / TABELAS ADMIN
+   Padroniza os blocos de listagem sem alterar IDs, classes JS ou lógica.
+   ============================================================ */
+
+.lista-produtos,
+.pedidos-lista,
+.relatorio-status-lista,
+.relatorio-ranking-lista,
+.relatorio-pedidos-recentes {
+  width: 100%;
+  display: grid;
+  gap: 12px;
+}
+
+.produto-admin-item {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 18px;
+  min-height: 82px;
+  padding: 17px 18px;
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  border-radius: 22px;
+  background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.035);
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease, background 0.18s ease;
+}
+
+.produto-admin-item:hover {
+  transform: translateY(-1px);
+  border-color: #d7dee9;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.075);
+  background: #ffffff;
+}
+
+.produto-admin-item > div:first-child {
+  min-width: 0;
+  display: grid;
+  gap: 5px;
+}
+
+.produto-admin-item strong {
+  color: var(--text);
+  font-size: 16px;
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+  font-weight: 950;
+}
+
+.produto-admin-item p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.4;
+  font-weight: 650;
+}
+
+.produto-admin-item small {
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.35;
+  font-weight: 800;
+}
+
+.produto-admin-item > div:first-child > span,
+.produto-acoes > span {
+  width: fit-content;
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  font-size: 12px;
+  line-height: 1;
+  font-weight: 950;
+  white-space: nowrap;
+}
+
+.produto-acoes {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.produto-acoes button {
+  min-height: 38px;
+  padding: 0 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #f8fafc;
+  color: #334155;
+  font-size: 12px;
+  font-weight: 950;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color 0.18s ease, background 0.18s ease, color 0.18s ease, transform 0.18s ease;
+}
+
+.produto-acoes button:hover {
+  transform: translateY(-1px);
+  background: #ffffff;
+  border-color: #cbd5e1;
+}
+
+.produto-acoes .btn-excluir,
+button.btn-excluir {
+  background: #fff1f2;
+  color: #e11d48;
+  border-color: #fecdd3;
+}
+
+.produto-acoes .btn-excluir:hover,
+button.btn-excluir:hover {
+  background: #ffe4e6;
+  border-color: #fda4af;
+}
+
+.toolbar,
+.produtos-toolbar {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.toolbar input,
+.produtos-search-wrap {
+  min-height: 50px;
+  border-radius: 16px;
+}
+
+.admin-inline-form {
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  border-radius: 22px;
+  background: #ffffff;
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.035);
+}
+
+@media (max-width: 760px) {
+  .produto-admin-item {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+    gap: 14px;
+    min-height: 0;
+    padding: 16px;
+    border-radius: 20px;
+  }
+
+  .produto-acoes {
+    width: 100%;
+    justify-content: stretch;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .produto-acoes > span {
+    width: 100%;
+    justify-content: center;
+    grid-column: 1 / -1;
+  }
+
+  .produto-acoes button {
+    width: 100%;
+    min-height: 42px;
+  }
+}
+
+@media (max-width: 430px) {
+  .produto-acoes {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================================================
+   Correção definitiva: botões dos heroes centralizados
+   Mantém a ação no canto direito e centraliza verticalmente
+   em relação ao bloco completo de título + descrição.
+========================================================= */
+@media (min-width: 761px) {
+  .page-hero.page-hero-standard .page-hero-main {
+    position: relative;
+    min-height: 74px;
+    padding-right: 260px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .page-hero.page-hero-standard .page-hero-title-row {
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  .page-hero.page-hero-standard .page-hero-actions {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    margin-left: 0;
+    align-items: center;
+    justify-content: flex-end;
+  }
+}
+
+@media (max-width: 760px) {
+  .page-hero.page-hero-standard .page-hero-main {
+    position: static;
+    padding-right: 0;
+    min-height: 0;
+  }
+
+  .page-hero.page-hero-standard .page-hero-actions {
+    position: static;
+    transform: none;
   }
 }

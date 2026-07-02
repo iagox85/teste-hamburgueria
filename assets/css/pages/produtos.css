@@ -1697,3 +1697,121 @@
     box-shadow: none;
   }
 }
+
+/* ============================================================
+   DELIVERYOS DESIGN SYSTEM v1 - LISTA DE PRODUTOS
+   Mantém a lógica original e apenas equaliza visual/responsivo.
+   ============================================================ */
+
+.produtos-lista .produto-admin-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 18px;
+  min-height: 112px;
+  padding: 16px 18px;
+  border-radius: 22px;
+  background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.035);
+}
+
+.produtos-lista .produto-admin-info {
+  min-width: 0;
+  display: grid !important;
+  grid-template-columns: 86px minmax(0, 1fr);
+  align-items: center !important;
+  gap: 15px !important;
+}
+
+.produtos-lista .produto-admin-thumb {
+  width: 86px !important;
+  height: 86px !important;
+  border-radius: 20px !important;
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  overflow: hidden;
+}
+
+.produtos-lista .produto-admin-texto {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.produtos-lista .produto-admin-texto strong {
+  font-size: 16px;
+  line-height: 1.25;
+}
+
+.produtos-lista .produto-admin-texto p {
+  max-width: 680px;
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.38;
+}
+
+.produtos-lista .produto-admin-texto > span {
+  margin-top: 4px;
+  min-height: 30px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+}
+
+.produtos-lista .produto-acoes {
+  min-width: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding-top: 0;
+}
+
+.produtos-lista .produto-acoes > span {
+  width: 100%;
+  justify-content: flex-end;
+  font-size: 12px;
+}
+
+@media (max-width: 900px) {
+  .produtos-lista .produto-admin-item {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+
+  .produtos-lista .produto-acoes {
+    width: 100%;
+    min-width: 0;
+    justify-content: stretch;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .produtos-lista .produto-acoes > span {
+    grid-column: 1 / -1;
+    justify-content: center;
+  }
+
+  .produtos-lista .produto-acoes button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 560px) {
+  .produtos-lista .produto-admin-info {
+    grid-template-columns: 72px minmax(0, 1fr);
+    gap: 12px !important;
+  }
+
+  .produtos-lista .produto-admin-thumb {
+    width: 72px !important;
+    height: 72px !important;
+    border-radius: 17px !important;
+  }
+
+  .produtos-lista .produto-acoes {
+    grid-template-columns: 1fr;
+  }
+}
