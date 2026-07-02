@@ -417,7 +417,7 @@ function criarCardPedido(pedido) {
       <div class="pedido-card-acoes">
         ${acaoHTML}
         ${cancelarHTML}
-        <button class="btn-imprimir-pedido" onclick="imprimirPedido('${pedido.id}')">Imprimir</button>
+        <button class="btn-imprimir-pedido" onclick="imprimirPedido('${pedido.id}')">🧾 Visualizar comanda</button>
       </div>
     </article>
   `;
@@ -570,89 +570,14 @@ function iniciarRealtimePedidos() {
 }
 
 function imprimirPedido(pedidoId) {
-  const pedido = pedidosCache.find((item) => item.id === pedidoId);
+  if (!pedidoId) return;
 
-  if (!pedido) return;
-
-  const janela = window.open("", "_blank", "width=420,height=700");
+  const url = `print.html?id=${encodeURIComponent(pedidoId)}`;
+  const janela = window.open(url, "_blank", "width=460,height=760");
 
   if (!janela) {
-    alert("O navegador bloqueou a janela de impressão.");
-    return;
+    alert("O navegador bloqueou a abertura da comanda. Permita pop-ups ou toque novamente em Visualizar comanda.");
   }
-
-  const itens = Array.isArray(pedido.itens) ? pedido.itens : [];
-
-  janela.document.write(`
-    <html>
-      <head>
-        <title>Pedido ${pedido.numero_pedido || ""}</title>
-        <style>
-          body {
-            font-family: Arial, sans-serif;
-            padding: 16px;
-            color: #111;
-          }
-
-          h1 {
-            font-size: 22px;
-            margin: 0 0 8px;
-          }
-
-          h2 {
-            font-size: 16px;
-            margin: 18px 0 8px;
-            border-top: 1px dashed #999;
-            padding-top: 12px;
-          }
-
-          p {
-            margin: 4px 0;
-            font-size: 14px;
-          }
-
-          .total {
-            font-size: 20px;
-            font-weight: bold;
-            margin-top: 14px;
-            border-top: 1px dashed #999;
-            padding-top: 12px;
-          }
-
-          small {
-            display: block;
-            margin-left: 12px;
-          }
-
-          @media print {
-            button { display: none; }
-          }
-        </style>
-      </head>
-      <body>
-        <h1>Pedido #${pedido.numero_pedido || pedido.id.slice(0, 6)}</h1>
-        <p><strong>Cliente:</strong> ${escaparHTMLPedido(pedido.cliente_nome)}</p>
-        <p><strong>WhatsApp:</strong> ${escaparHTMLPedido(pedido.cliente_whatsapp)}</p>
-        <p><strong>Data:</strong> ${formatarDataPedido(pedido.created_at)}</p>
-
-        <h2>Itens</h2>
-        ${itens.map((item) => `
-          <p><strong>${item.quantidade}x ${escaparHTMLPedido(item.nome)}</strong></p>
-          ${(item.adicionais || []).map((adicional) => `<small>+ ${escaparHTMLPedido(adicional.nome)} - ${formatarMoedaPedidos(adicional.preco)}</small>`).join("")}
-          ${item.observacao ? `<small>Obs: ${escaparHTMLPedido(item.observacao)}</small>` : ""}
-        `).join("")}
-
-        <h2>Pagamento</h2>
-        <p>${formatarPagamentoPedido(pedido)}</p>
-
-        <p class="total">Total: ${formatarMoedaPedidos(pedido.total)}</p>
-
-        <button onclick="window.print()">Imprimir</button>
-      </body>
-    </html>
-  `);
-
-  janela.document.close();
 }
 
 function instalarFiltrosPedidos() {

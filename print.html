@@ -1,1 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Comanda - DeliveryOS</title>
+  <link rel="stylesheet" href="assets/css/print.css?v=20260702-sem-zoom-pref">
+</head>
+<body>
 
+<main class="print-page">
+  <section id="printStatus" class="print-status">
+    <h1>Carregando comanda...</h1>
+    <p>Aguarde enquanto o pedido é localizado.</p>
+  </section>
+
+  <section id="printApp" class="print-app oculto" aria-live="polite">
+    <header class="preview-header">
+      <div>
+        <span class="preview-kicker">DeliveryOS</span>
+        <h1 id="previewTitulo">Comanda do pedido</h1>
+      </div>
+      <span id="previewFormato" class="preview-formato">80 mm</span>
+    </header>
+
+    <section id="printToolbar" class="print-toolbar" aria-label="Configurações de impressão">
+      <div class="toolbar-grupo">
+        <strong>Formato da impressora</strong>
+        <div class="toolbar-botoes" role="group" aria-label="Escolha o formato da comanda">
+          <button type="button" class="modo-btn active" data-print-size="80mm">80 mm</button>
+          <button type="button" class="modo-btn" data-print-size="58mm">58 mm</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="preview-area" aria-label="Pré-visualização da comanda">
+      <div id="previewStage" class="preview-stage">
+        <section id="printComanda" class="comanda-shell"></section>
+      </div>
+    </section>
+
+    <section id="printReady" class="print-ready" aria-live="polite">
+      <strong>Formato: <span id="printReadyFormato">Térmica 80 mm</span></strong>
+      <span>Pronto para impressão</span>
+    </section>
+
+    <section id="printActions" class="print-actions">
+      <button id="btnImprimir" type="button">Imprimir</button>
+      <button id="btnReimprimir" type="button" class="btn-secundario">Reimprimir</button>
+      <button id="btnFechar" type="button" class="btn-fechar">Fechar</button>
+    </section>
+  </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/config.js"></script>
+<script src="assets/js/supabase.js"></script>
+<script src="assets/js/print.js?v=20260702-sem-zoom-pref"></script>
+
+</body>
+</html>

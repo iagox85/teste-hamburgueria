@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard - DeliveryOS</title>
   <link rel="stylesheet" href="assets/css/admin.css?v=20260701v10">
+  <link rel="stylesheet" href="assets/css/pages/dashboard.css?v=20260702premiumv2">
 </head>
 <body>
 
@@ -12,100 +13,171 @@
 
   <aside id="sidebar" class="sidebar"></aside>
 
-  <main class="content page-stack">
+  <main class="content page-stack dashboard-page">
 
-    <header class="topbar">
+    <header class="topbar dashboard-topbar">
       <div>
+        <span class="dashboard-kicker">Painel administrativo</span>
         <h1>Dashboard</h1>
-        <p>Resumo geral da sua loja hoje.</p>
+        <p>Acompanhe o desempenho da sua loja em tempo real.</p>
       </div>
 
       <div class="topbar-actions">
-        <button class="notification">🔔</button>
+        <a class="btn-admin-secondary dashboard-action-link" href="configuracoes.html">Configurar loja</a>
         <button id="sair">Sair</button>
       </div>
     </header>
 
-    <section class="page-hero">
-      <div>
-        <span class="page-hero-kicker">🚀 Painel da loja</span>
-        <h2>Controle sua operação em um só lugar</h2>
-        <p>Acompanhe pedidos, produtos, configurações e desempenho da loja com uma experiência mais limpa e profissional.</p>
+    <section class="dashboard-hero-premium dashboard-hero-polish">
+      <div class="dashboard-hero-content">
+        <span class="dashboard-hero-label">🚀 DeliveryOS</span>
+        <h2>Controle sua operação em tempo real</h2>
+        <p>Acompanhe pedidos, cardápio e resultados em uma visão rápida, limpa e profissional.</p>
+
+        <div class="dashboard-hero-actions">
+          <a href="pedidos.html" class="btn-admin-primary">Ver pedidos</a>
+          <a href="produtos.html" class="btn-admin-secondary">Cadastrar produto</a>
+        </div>
       </div>
 
-      <div class="page-hero-actions">
-        <a class="btn-admin-secondary" href="produtos.html">Cadastrar produto</a>
-        <a class="btn-admin-secondary" href="pedidos.html">Ver pedidos</a>
-      </div>
-    </section>
-
-    <section class="cards">
-      <div class="card admin-metric-card">
-        <span>Vendas hoje</span>
-        <strong>R$ 0,00</strong>
-      </div>
-
-      <div class="card admin-metric-card">
-        <span>Pedidos hoje</span>
-        <strong>0</strong>
-      </div>
-
-      <div class="card admin-metric-card">
-        <span>Pedidos novos</span>
-        <strong>0</strong>
-      </div>
-
-      <div class="card admin-metric-card">
-        <span>Status da loja</span>
-        <strong class="status-open">Aberta</strong>
+      <div class="dashboard-store-card dashboard-store-card-polish">
+        <div class="dashboard-store-icon">D</div>
+        <div>
+          <span>Operação</span>
+          <strong>Tudo pronto</strong>
+          <p>Cardápio, pedidos e notificações funcionando.</p>
+        </div>
       </div>
     </section>
 
-    <section class="dashboard-welcome-grid">
-      <div class="panel">
-        <div class="panel-header">
+    <section class="dashboard-metrics-grid" aria-label="Resumo da loja">
+      <article class="dashboard-metric-card dashboard-metric-card-polish">
+        <div class="dashboard-metric-icon">💰</div>
+        <div>
+          <span>Vendas hoje</span>
+          <strong>R$ 0,00</strong>
+          <small>Total confirmado no dia</small>
+          <em>Atualiza ao finalizar pedidos</em>
+        </div>
+      </article>
+
+      <article class="dashboard-metric-card dashboard-metric-card-polish">
+        <div class="dashboard-metric-icon">📦</div>
+        <div>
+          <span>Pedidos hoje</span>
+          <strong>0</strong>
+          <small>Pedidos gerados no cardápio</small>
+          <em>Resumo do movimento da loja</em>
+        </div>
+      </article>
+
+      <article class="dashboard-metric-card dashboard-metric-card-polish">
+        <div class="dashboard-metric-icon">🔔</div>
+        <div>
+          <span>Pedidos novos</span>
+          <strong>0</strong>
+          <small>Aguardando aceite</small>
+          <em>Atualização em tempo real</em>
+        </div>
+      </article>
+
+      <article class="dashboard-metric-card dashboard-metric-card-polish">
+        <div class="dashboard-metric-icon">🍔</div>
+        <div>
+          <span>Produtos ativos</span>
+          <strong>0</strong>
+          <small>Itens cadastrados no cardápio</small>
+          <em>Itens disponíveis no cardápio</em>
+        </div>
+      </article>
+    </section>
+
+    <section class="dashboard-main-grid dashboard-main-grid-polish">
+      <article class="dashboard-panel dashboard-panel-large dashboard-panel-polish">
+        <div class="dashboard-panel-header">
           <div>
+            <span>Movimento</span>
             <h2>Pedidos recentes</h2>
-            <p class="panel-subtitle">Os últimos pedidos recebidos aparecerão aqui.</p>
           </div>
+          <a href="pedidos.html">Ver todos</a>
         </div>
 
-        <div class="admin-empty-state">
-          <strong>Nenhum pedido recebido ainda</strong>
-          <p>Assim que um cliente finalizar o checkout, você verá o pedido em tempo real.</p>
+        <div class="dashboard-empty-state dashboard-empty-polish">
+          <div class="dashboard-empty-icon">📦</div>
+          <strong>Ainda não há pedidos recentes</strong>
+          <p>Quando um cliente finalizar um pedido, ele aparecerá aqui para você acompanhar rapidamente.</p>
+          <a href="pedidos.html" class="btn-admin-secondary">Abrir pedidos</a>
         </div>
-      </div>
+      </article>
 
-      <div class="panel">
-        <div class="panel-header">
-          <div>
-            <h2>Ações rápidas</h2>
-            <p class="panel-subtitle">Atalhos para as principais áreas.</p>
+      <aside class="dashboard-side-stack">
+        <article class="dashboard-panel dashboard-panel-polish">
+          <div class="dashboard-panel-header compact">
+            <div>
+              <span>Atalhos</span>
+              <h2>Ações rápidas</h2>
+            </div>
           </div>
-        </div>
 
-        <div class="quick-actions-grid">
-          <a class="quick-action-card" href="produtos.html">
-            <strong>🍔 Produtos</strong>
-            <span>Cadastre e edite o cardápio.</span>
-          </a>
+          <div class="dashboard-shortcuts dashboard-shortcuts-polish">
+            <a href="produtos.html">
+              <div>
+                <strong>🍔 Produtos</strong>
+                <span>Gerenciar cardápio</span>
+              </div>
+              <b>Cadastrar</b>
+            </a>
 
-          <a class="quick-action-card" href="categorias.html">
-            <strong>📂 Categorias</strong>
-            <span>Organize seus produtos.</span>
-          </a>
+            <a href="categorias.html">
+              <div>
+                <strong>📂 Categorias</strong>
+                <span>Organizar seções</span>
+              </div>
+              <b>Organizar</b>
+            </a>
 
-          <a class="quick-action-card" href="pedidos.html">
-            <strong>📦 Pedidos</strong>
-            <span>Acompanhe em tempo real.</span>
-          </a>
+            <a href="configuracoes.html">
+              <div>
+                <strong>⚙️ Configurações</strong>
+                <span>Personalizar loja</span>
+              </div>
+              <b>Ajustar</b>
+            </a>
 
-          <a class="quick-action-card" href="configuracoes.html">
-            <strong>⚙️ Configurações</strong>
-            <span>Personalize sua loja.</span>
-          </a>
-        </div>
-      </div>
+            <a href="relatorios.html">
+              <div>
+                <strong>📊 Relatórios</strong>
+                <span>Acompanhar resultados</span>
+              </div>
+              <b>Ver dados</b>
+            </a>
+          </div>
+        </article>
+
+        <article class="dashboard-panel dashboard-health-card dashboard-panel-polish">
+          <div class="dashboard-panel-header compact">
+            <div>
+              <span>Status</span>
+              <h2>Saúde da loja</h2>
+            </div>
+          </div>
+
+          <ul class="dashboard-health-list dashboard-health-polish">
+            <li>
+              <div><i></i><span>Cardápio público</span></div>
+              <strong>Online</strong>
+            </li>
+            <li>
+              <div><i></i><span>Notificações</span></div>
+              <strong>Ativas</strong>
+            </li>
+            <li>
+              <div><i></i><span>Pedidos em tempo real</span></div>
+              <strong>Conectado</strong>
+            </li>
+          </ul>
+        </article>
+      </aside>
     </section>
 
   </main>

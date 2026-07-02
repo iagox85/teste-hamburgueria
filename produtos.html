@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Produtos - DeliveryOS</title>
   <link rel="stylesheet" href="assets/css/admin.css?v=20260701v10">
+  <link rel="stylesheet" href="assets/css/pages/produtos.css?v=20260702v3-modalclean">
 </head>
 <body>
 
@@ -12,86 +13,240 @@
 
   <aside id="sidebar" class="sidebar"></aside>
 
-  <main class="content page-stack">
+  <main class="content page-stack produtos-page">
 
     <header id="topbar" class="topbar"></header>
 
-    <section class="page-hero">
-      <div>
-        <span class="page-hero-kicker">🍔 Cardápio</span>
+    <section class="produtos-hero">
+      <div class="produtos-hero-content">
+        <span class="produtos-kicker">🍔 Cardápio inteligente</span>
         <h2>Produtos da loja</h2>
-        <p>Cadastre fotos, preços, categorias e adicionais para montar um cardápio mais bonito e fácil de vender.</p>
-      </div>
+        <p>Organize seu cardápio com fotos, preços, categorias e adicionais. Uma boa apresentação ajuda o cliente a escolher mais rápido e aumenta o valor do pedido.</p>
 
-      <div class="page-hero-actions">
-        <button id="btnNovoProduto" type="button" class="btn-admin-secondary">+ Novo Produto</button>
-      </div>
-    </section>
-
-    <section class="admin-list-panel">
-      <div class="admin-list-head">
-        <div>
-          <h2>Lista de produtos</h2>
-          <p>Gerencie todos os produtos disponíveis no cardápio público.</p>
+        <div class="produtos-hero-actions">
+          <button id="btnNovoProduto" type="button" class="btn-admin-primary produtos-primary-action">
+            + Novo Produto
+          </button>
+          <a href="categorias.html" class="produtos-secondary-action">Organizar categorias</a>
         </div>
       </div>
 
-      <div class="admin-toolbar">
-        <input type="text" id="buscarProduto" placeholder="Buscar produto pelo nome...">
+      <div class="produtos-hero-card" aria-hidden="true">
+        <div class="produtos-hero-icon">🍟</div>
+        <div>
+          <span>Gestão do cardápio</span>
+          <strong>Produtos, adicionais e fotos em um só lugar.</strong>
+          <p>Mantenha seu cardápio sempre atualizado para receber pedidos com menos dúvidas.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="produtos-workspace">
+      <div class="produtos-main-panel">
+        <div class="produtos-panel-header">
+          <div>
+            <span>Produtos cadastrados</span>
+            <h2>Lista de produtos</h2>
+            <p>Edite preços, pause itens indisponíveis e mantenha seu cardápio pronto para vender.</p>
+          </div>
+        </div>
+
+        <div class="produtos-toolbar">
+          <div class="produtos-search-wrap">
+            <span>🔎</span>
+            <input type="text" id="buscarProduto" placeholder="Buscar produto pelo nome, categoria ou descrição...">
+          </div>
+        </div>
+
+        <div id="listaProdutos" class="lista-produtos produtos-lista"></div>
       </div>
 
-      <div id="listaProdutos" class="lista-produtos"></div>
+      <aside class="produtos-side-stack">
+        <section class="produtos-side-card">
+          <div class="side-card-header">
+            <span>⚡</span>
+            <div>
+              <h3>Ações rápidas</h3>
+              <p>Atalhos para organizar seu cardápio.</p>
+            </div>
+          </div>
+
+          <div class="produtos-shortcuts">
+            <a href="categorias.html">📁 Categorias</a>
+            <a href="grupos-adicionais.html">🧩 Grupos de adicionais</a>
+            <a href="adicionais.html">➕ Adicionais</a>
+            <a href="configuracoes.html">⚙️ Configurações da loja</a>
+          </div>
+        </section>
+
+        <section class="produtos-side-card produtos-check-card">
+          <div class="side-card-header">
+            <span>✅</span>
+            <div>
+              <h3>Checklist de venda</h3>
+              <p>Boas práticas para um cardápio mais profissional.</p>
+            </div>
+          </div>
+
+          <ul class="produtos-checklist">
+            <li><span></span> Produto com foto de qualidade</li>
+            <li><span></span> Descrição curta e objetiva</li>
+            <li><span></span> Preço revisado antes de publicar</li>
+            <li><span></span> Adicionais vinculados corretamente</li>
+          </ul>
+        </section>
+      </aside>
     </section>
 
   </main>
 
 </div>
 
-<div id="modalProduto" class="modal oculto">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h2>Novo Produto</h2>
-      <button id="fecharModalProduto" type="button">×</button>
+<div id="modalProduto" class="modal oculto produtos-modal">
+  <div class="modal-content produtos-modal-content">
+    <div class="produtos-modal-shell">
+      <div class="produtos-modal-panel">
+        <div class="modal-header produtos-modal-header">
+          <div>
+            <span>Dados do produto</span>
+            <h2>Novo Produto</h2>
+          </div>
+          <button id="fecharModalProduto" type="button" aria-label="Fechar modal">×</button>
+        </div>
+
+        <form id="formProduto" class="form-modal produtos-form">
+          <div class="produtos-form-grid">
+            <div class="produtos-form-main">
+              <section class="produtos-form-section">
+                <div class="produtos-section-title">
+                  <span>01</span>
+                  <div>
+                    <h3>Informações principais</h3>
+                    <p>Nome, descrição, categoria e preço do produto.</p>
+                  </div>
+                </div>
+
+                <label class="produtos-field">
+                  <span>Nome do produto</span>
+                  <input type="text" id="produtoNome" placeholder="Ex.: X-Bacon artesanal" required>
+                </label>
+
+                <label class="produtos-field">
+                  <span>Descrição</span>
+                  <textarea id="produtoDescricao" placeholder="Ex.: Hambúrguer artesanal, queijo, bacon crocante e molho da casa."></textarea>
+                </label>
+
+                <div class="produtos-form-row">
+                  <label class="produtos-field">
+                    <span>Categoria</span>
+                    <select id="produtoCategoria">
+                      <option value="">Selecione uma categoria</option>
+                    </select>
+                  </label>
+
+                  <label class="produtos-field produtos-price-field">
+                    <span>Preço</span>
+                    <input type="number" id="produtoPreco" placeholder="0,00" step="0.01" required>
+                  </label>
+                </div>
+              </section>
+
+              <section class="produtos-form-section">
+                <div class="produtos-section-title">
+                  <span>02</span>
+                  <div>
+                    <h3>Adicionais</h3>
+                    <p>Vincule grupos de adicionais para aumentar o ticket médio.</p>
+                  </div>
+                </div>
+
+                <div class="campo-grupos produtos-field produtos-groups-field">
+                  <label>Grupos de adicionais</label>
+                  <div class="produtos-multiselect" id="dropdownGruposProduto">
+                    <button type="button" id="btnDropdownGruposProduto" class="produtos-multiselect-trigger" aria-expanded="false">
+                      <span id="resumoGruposProduto">Selecione os grupos de adicionais</span>
+                      <strong>⌄</strong>
+                    </button>
+                    <div id="listaGruposProduto" class="lista-checkbox produtos-multiselect-menu"></div>
+                  </div>
+                </div>
+              </section>
+            </div>
+
+            <aside class="produtos-form-aside">
+              <section class="produtos-form-section produtos-image-section">
+                <div class="produtos-section-title">
+                  <span>03</span>
+                  <div>
+                    <h3>Imagem</h3>
+                    <p>Foto usada no cardápio online.</p>
+                  </div>
+                </div>
+
+                <div class="campo-imagem-produto produtos-image-box">
+                  <label for="produtoImagem">Imagem do produto</label>
+
+                  <div class="preview-produto-imagem" id="produtoImagemPreview" role="button" tabindex="0" aria-label="Selecionar imagem do produto">
+                    <span>
+                      <strong>Clique para selecionar</strong>
+                      <small>ou arraste a imagem até aqui</small>
+                    </span>
+                  </div>
+
+                  <input type="file" id="produtoImagem" accept="image/*">
+                  <input type="hidden" id="produtoImagemUrl">
+
+                  <div class="imagem-produto-acoes">
+                    <button type="button" id="btnRemoverImagem" class="btn-secundario">
+                      Remover foto
+                    </button>
+                  </div>
+
+                  <div class="produtos-image-help">
+                    <strong>Dimensões recomendadas</strong>
+                    <p>Proporção ideal: 1:1 (quadrada).</p>
+                    <p>Tamanho mínimo: 800 × 800 px.</p>
+                    <p>Tamanho recomendado: 1080 × 1080 px.</p>
+                    <p>Formato: JPG ou PNG, até 2MB.</p>
+                  </div>
+                </div>
+              </section>
+            </aside>
+          </div>
+
+          <div class="produtos-modal-footer">
+            <button type="button" class="produtos-modal-cancel" onclick="document.getElementById('fecharModalProduto').click()">
+              Cancelar
+            </button>
+            <button type="submit" class="produtos-modal-save">
+              Salvar Produto
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div id="modalConfirmarExclusaoProduto" class="modal oculto produtos-confirm-modal">
+  <div class="produtos-confirm-box">
+    <div class="produtos-confirm-icon">🗑️</div>
+
+    <div class="produtos-confirm-content">
+      <span>Confirmação necessária</span>
+      <h2>Excluir produto?</h2>
+      <p>Você realmente deseja excluir <strong id="nomeProdutoExclusao">este produto</strong>? Essa ação não poderá ser desfeita.</p>
     </div>
 
-    <form id="formProduto" class="form-modal">
-      <input type="text" id="produtoNome" placeholder="Nome do produto" required>
-      <textarea id="produtoDescricao" placeholder="Descrição do produto"></textarea>
-
-      <select id="produtoCategoria">
-        <option value="">Selecione uma categoria</option>
-      </select>
-
-      <input type="number" id="produtoPreco" placeholder="Preço" step="0.01" required>
-
-      <div class="campo-imagem-produto">
-        <label for="produtoImagem">Imagem do produto</label>
-
-        <div class="preview-produto-imagem" id="produtoImagemPreview">
-          <span>Sem imagem</span>
-        </div>
-
-        <input type="file" id="produtoImagem" accept="image/*">
-        <input type="hidden" id="produtoImagemUrl">
-
-        <div class="imagem-produto-acoes">
-          <button type="button" id="btnRemoverImagem" class="btn-secundario">
-            Remover imagem
-          </button>
-        </div>
-
-        <small class="ajuda-campo">
-          Recomendado: imagem quadrada ou horizontal, até 2MB.
-        </small>
-      </div>
-
-      <div class="campo-grupos">
-        <label>Grupos de adicionais</label>
-        <div id="listaGruposProduto" class="lista-checkbox"></div>
-      </div>
-
-      <button type="submit">Salvar Produto</button>
-    </form>
+    <div class="produtos-confirm-actions">
+      <button type="button" id="btnCancelarExclusaoProduto" class="produtos-confirm-cancelar">
+        Cancelar
+      </button>
+      <button type="button" id="btnConfirmarExclusaoProduto" class="produtos-confirm-excluir">
+        Excluir produto
+      </button>
+    </div>
   </div>
 </div>
 

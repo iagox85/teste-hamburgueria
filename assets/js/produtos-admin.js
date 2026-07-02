@@ -6,10 +6,17 @@ const btnNovoProduto = document.getElementById("btnNovoProduto");
 const buscarProduto = document.getElementById("buscarProduto");
 const produtoCategoria = document.getElementById("produtoCategoria");
 const listaGruposProduto = document.getElementById("listaGruposProduto");
+const dropdownGruposProduto = document.getElementById("dropdownGruposProduto");
+const btnDropdownGruposProduto = document.getElementById("btnDropdownGruposProduto");
+const resumoGruposProduto = document.getElementById("resumoGruposProduto");
 const produtoImagem = document.getElementById("produtoImagem");
 const produtoImagemPreview = document.getElementById("produtoImagemPreview");
 const produtoImagemUrl = document.getElementById("produtoImagemUrl");
 const btnRemoverImagem = document.getElementById("btnRemoverImagem");
+const modalConfirmarExclusaoProduto = document.getElementById("modalConfirmarExclusaoProduto");
+const nomeProdutoExclusao = document.getElementById("nomeProdutoExclusao");
+const btnCancelarExclusaoProduto = document.getElementById("btnCancelarExclusaoProduto");
+const btnConfirmarExclusaoProduto = document.getElementById("btnConfirmarExclusaoProduto");
 
 const modalTitulo = document.querySelector(".modal-header h2");
 const BUCKET_IMAGENS_PRODUTOS = "produtos";
@@ -20,6 +27,7 @@ let categoriasCache = [];
 let gruposCache = [];
 let produtoEditandoId = null;
 let imagemMarcadaParaRemover = false;
+let produtoPendenteExclusaoId = null;
 
 btnNovoProduto.addEventListener("click", () => {
   produtoEditandoId = null;
@@ -38,7 +46,70 @@ modalProduto.addEventListener("click", (e) => {
   if (e.target === modalProduto) fecharModal();
 });
 
+if (modalConfirmarExclusaoProduto) {
+  modalConfirmarExclusaoProduto.addEventListener("click", (e) => {
+    if (e.target === modalConfirmarExclusaoProduto) fecharModalExclusaoProduto();
+  });
+}
+
+if (btnCancelarExclusaoProduto) {
+  btnCancelarExclusaoProduto.addEventListener("click", fecharModalExclusaoProduto);
+}
+
+if (btnConfirmarExclusaoProduto) {
+  btnConfirmarExclusaoProduto.addEventListener("click", confirmarExclusaoProduto);
+}
+
 buscarProduto.addEventListener("input", renderizarProdutos);
+
+
+if (produtoImagemPreview && produtoImagem) {
+  produtoImagemPreview.addEventListener("click", () => produtoImagem.click());
+  produtoImagemPreview.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      produtoImagem.click();
+    }
+  });
+
+  produtoImagemPreview.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    produtoImagemPreview.classList.add("arrastando");
+  });
+
+  produtoImagemPreview.addEventListener("dragleave", () => {
+    produtoImagemPreview.classList.remove("arrastando");
+  });
+
+  produtoImagemPreview.addEventListener("drop", (e) => {
+    e.preventDefault();
+    produtoImagemPreview.classList.remove("arrastando");
+
+    const arquivo = e.dataTransfer?.files?.[0];
+    if (!arquivo) return;
+
+    const transfer = new DataTransfer();
+    transfer.items.add(arquivo);
+    produtoImagem.files = transfer.files;
+    produtoImagem.dispatchEvent(new Event("change", { bubbles: true }));
+  });
+}
+
+if (btnDropdownGruposProduto && dropdownGruposProduto) {
+  btnDropdownGruposProduto.addEventListener("click", () => {
+    const aberto = dropdownGruposProduto.classList.toggle("aberto");
+    btnDropdownGruposProduto.setAttribute("aria-expanded", aberto ? "true" : "false");
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!dropdownGruposProduto.contains(e.target)) {
+      dropdownGruposProduto.classList.remove("aberto");
+      btnDropdownGruposProduto.setAttribute("aria-expanded", "false");
+    }
+  });
+
+  listaGruposProduto.addEventListener("change", atualizarResumoGruposProduto);
+}
 
 if (produtoImagem) {
   produtoImagem.addEventListener("change", () => {
@@ -207,7 +278,7 @@ function atualizarPreviewImagem(url) {
     return;
   }
 
-  produtoImagemPreview.innerHTML = `<span>Sem imagem</span>`;
+  produtoImagemPreview.innerHTML = `<span><strong>Clique para selecionar</strong><small>ou arraste a imagem até aqui</small></span>`;
 }
 
 function obterImagemProduto(produto) {
@@ -320,9 +391,27 @@ async function carregarGrupos() {
   gruposCache = data || [];
 }
 
+function atualizarResumoGruposProduto() {
+  if (!listaGruposProduto || !resumoGruposProduto) return;
+
+  const selecionados = Array.from(listaGruposProduto.querySelectorAll("input[type='checkbox']:checked"))
+    .map((checkbox) => checkbox.closest("label")?.querySelector("span")?.textContent?.trim())
+    .filter(Boolean);
+
+  if (!selecionados.length) {
+    resumoGruposProduto.textContent = "Selecione os grupos de adicionais";
+    return;
+  }
+
+  resumoGruposProduto.textContent = selecionados.length === 1
+    ? selecionados[0]
+    : `${selecionados.length} grupos selecionados`;
+}
+
 function renderizarGruposProduto(gruposSelecionados = []) {
   if (!gruposCache.length) {
     listaGruposProduto.innerHTML = "<p>Nenhum grupo cadastrado.</p>";
+    atualizarResumoGruposProduto();
     return;
   }
 
@@ -332,10 +421,12 @@ function renderizarGruposProduto(gruposSelecionados = []) {
     return `
       <label>
         <input type="checkbox" value="${grupo.id}" ${checked}>
-        ${grupo.nome}
+        <span>${escaparHTML(grupo.nome)}</span>
       </label>
     `;
   }).join("");
+
+  atualizarResumoGruposProduto();
 }
 
 async function carregarProdutos() {
@@ -589,19 +680,71 @@ async function alternarDisponibilidade(id, indisponivelAtual) {
   carregarProdutos();
 }
 
-async function excluirProduto(id) {
-  if (!confirm("Deseja excluir este produto?")) return;
+function fecharModalExclusaoProduto() {
+  produtoPendenteExclusaoId = null;
+
+  if (nomeProdutoExclusao) {
+    nomeProdutoExclusao.innerText = "este produto";
+  }
+
+  modalConfirmarExclusaoProduto?.classList.add("oculto");
+}
+
+function excluirProduto(id) {
+  const produto = produtosCache.find((item) => item.id === id);
+
+  produtoPendenteExclusaoId = id;
+
+  if (nomeProdutoExclusao) {
+    nomeProdutoExclusao.innerText = produto?.nome || "este produto";
+  }
+
+  if (!modalConfirmarExclusaoProduto || !btnConfirmarExclusaoProduto) {
+    confirmarExclusaoProduto();
+    return;
+  }
+
+  modalConfirmarExclusaoProduto.classList.remove("oculto");
+}
+
+async function confirmarExclusaoProduto() {
+  if (!produtoPendenteExclusaoId) return;
+
+  const produtoId = produtoPendenteExclusaoId;
+  const textoOriginal = btnConfirmarExclusaoProduto?.innerText || "Excluir produto";
+
+  if (btnConfirmarExclusaoProduto) {
+    btnConfirmarExclusaoProduto.disabled = true;
+    btnConfirmarExclusaoProduto.innerText = "Excluindo...";
+  }
 
   const { error } = await supabaseClient
     .from("produtos")
     .delete()
-    .eq("id", id)
+    .eq("id", produtoId)
     .eq("loja_id", lojaAtual);
 
+  if (btnConfirmarExclusaoProduto) {
+    btnConfirmarExclusaoProduto.disabled = false;
+    btnConfirmarExclusaoProduto.innerText = textoOriginal;
+  }
+
   if (error) {
-    alert("Erro ao excluir produto.");
     console.error(error);
+
+    if (window.showToast) {
+      showToast("Erro ao excluir produto. Tente novamente.", "error");
+    } else {
+      alert("Erro ao excluir produto.");
+    }
+
     return;
+  }
+
+  fecharModalExclusaoProduto();
+
+  if (window.showToast) {
+    showToast("Produto excluído com sucesso.", "success");
   }
 
   carregarProdutos();
