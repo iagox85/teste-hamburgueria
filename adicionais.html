@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Adicionais - DeliveryOS</title>
-  <link rel="stylesheet" href="assets/css/admin.css?v=20260702tablesv1">
-  <link rel="stylesheet" href="assets/css/mobile.css?v=20260702mobile3">
+  <link rel="stylesheet" href="assets/css/admin.css?v=20260703modals1">
+  <link rel="stylesheet" href="assets/css/mobile.css?v=20260703modals1">
 </head>
 <body>
 
@@ -37,16 +37,46 @@
         </div>
       </div>
 
-      <form id="formAdicional" class="admin-inline-form oculto">
-        <input type="text" id="adicionalNome" placeholder="Nome do adicional" required>
-        <textarea id="adicionalDescricao" placeholder="Descrição"></textarea>
+      <form id="formAdicional" class="admin-inline-form admin-form-modal oculto">
+        <div class="admin-form-modal-header">
+          <div>
+            <span>Adicional</span>
+            <h2>Novo adicional</h2>
+            <p>Cadastre ingredientes, bordas, molhos e complementos do cardápio.</p>
+          </div>
+          <button type="button" class="admin-form-modal-close" aria-label="Fechar" onclick="this.closest('form').classList.add('oculto')">×</button>
+        </div>
 
-        <select id="adicionalGrupo">
-          <option value="">Selecione um grupo</option>
-        </select>
+        <div class="admin-form-modal-body">
+          <label class="admin-form-field">
+            <span>Nome do adicional</span>
+            <input type="text" id="adicionalNome" placeholder="Ex.: Bacon extra" required>
+          </label>
 
-        <input type="number" id="adicionalPreco" placeholder="Preço" step="0.01" required>
-        <button type="submit">Salvar adicional</button>
+          <label class="admin-form-field">
+            <span>Descrição</span>
+            <textarea id="adicionalDescricao" placeholder="Ex.: Porção extra adicionada ao produto"></textarea>
+          </label>
+
+          <div class="admin-form-grid-2">
+            <label class="admin-form-field">
+              <span>Grupo</span>
+              <select id="adicionalGrupo">
+                <option value="">Selecione um grupo</option>
+              </select>
+            </label>
+
+            <label class="admin-form-field">
+              <span>Preço</span>
+              <input type="number" id="adicionalPreco" placeholder="0,00" step="0.01" required>
+            </label>
+          </div>
+        </div>
+
+        <div class="admin-form-modal-footer">
+          <button type="button" class="admin-form-modal-cancel" onclick="this.closest('form').classList.add('oculto')">Cancelar</button>
+          <button type="submit" class="admin-form-modal-save">Salvar adicional</button>
+        </div>
       </form>
 
       <div id="listaAdicionais" class="lista-produtos"></div>

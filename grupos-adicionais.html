@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Grupos de Adicionais - DeliveryOS</title>
-  <link rel="stylesheet" href="assets/css/admin.css?v=20260702tablesv1">
-  <link rel="stylesheet" href="assets/css/mobile.css?v=20260702mobile3">
+  <link rel="stylesheet" href="assets/css/admin.css?v=20260703modals1">
+  <link rel="stylesheet" href="assets/css/mobile.css?v=20260703modals1">
 </head>
 <body>
 
@@ -37,12 +37,44 @@
         </div>
       </div>
 
-      <form id="formGrupo" class="admin-inline-form oculto">
-        <input type="text" id="grupoNome" placeholder="Nome do grupo" required>
-        <textarea id="grupoDescricao" placeholder="Descrição"></textarea>
-        <input type="number" id="grupoMinimo" placeholder="Mínimo de escolhas" min="0" value="0">
-        <input type="number" id="grupoMaximo" placeholder="Máximo de escolhas" min="0" value="0">
-        <button type="submit">Salvar grupo</button>
+      <form id="formGrupo" class="admin-inline-form admin-form-modal oculto">
+        <div class="admin-form-modal-header">
+          <div>
+            <span>Grupo de adicionais</span>
+            <h2>Novo grupo</h2>
+            <p>Defina regras de escolha para adicionais como bordas, molhos e extras.</p>
+          </div>
+          <button type="button" class="admin-form-modal-close" aria-label="Fechar" onclick="this.closest('form').classList.add('oculto')">×</button>
+        </div>
+
+        <div class="admin-form-modal-body">
+          <label class="admin-form-field">
+            <span>Nome do grupo</span>
+            <input type="text" id="grupoNome" placeholder="Ex.: Molhos" required>
+          </label>
+
+          <label class="admin-form-field">
+            <span>Descrição</span>
+            <textarea id="grupoDescricao" placeholder="Ex.: Escolha até dois molhos"></textarea>
+          </label>
+
+          <div class="admin-form-grid-2">
+            <label class="admin-form-field">
+              <span>Mínimo de escolhas</span>
+              <input type="number" id="grupoMinimo" placeholder="0" min="0" value="0">
+            </label>
+
+            <label class="admin-form-field">
+              <span>Máximo de escolhas</span>
+              <input type="number" id="grupoMaximo" placeholder="0" min="0" value="0">
+            </label>
+          </div>
+        </div>
+
+        <div class="admin-form-modal-footer">
+          <button type="button" class="admin-form-modal-cancel" onclick="this.closest('form').classList.add('oculto')">Cancelar</button>
+          <button type="submit" class="admin-form-modal-save">Salvar grupo</button>
+        </div>
       </form>
 
       <div id="listaGrupos" class="lista-produtos"></div>
