@@ -2329,3 +2329,128 @@ button.salvando {
     width: auto !important;
   }
 }
+
+/* =========================================================
+   DeliveryOS - Hero padrão definitivo do painel
+   Usado em todas as páginas administrativas.
+   Mantém botões/IDs originais e altera apenas a camada visual.
+========================================================= */
+.page-hero.page-hero-standard {
+  min-height: 132px;
+  padding: 26px 28px;
+  border-radius: 26px;
+  background:
+    radial-gradient(circle at 96% 0%, rgba(255, 255, 255, 0.12) 0, rgba(255, 255, 255, 0.12) 78px, transparent 79px),
+    linear-gradient(135deg, #111827 0%, #1f2937 54%, #ef4444 138%);
+  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.16);
+  display: block;
+}
+
+.page-hero.page-hero-standard::after {
+  display: none;
+}
+
+.page-hero-standard .page-hero-main {
+  width: 100%;
+}
+
+.page-hero-standard .page-hero-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.page-hero-standard h2 {
+  margin: 0;
+  color: #ffffff;
+  font-size: clamp(28px, 3vw, 40px);
+  line-height: 1.05;
+  font-weight: 950;
+  letter-spacing: -0.045em;
+}
+
+.page-hero-standard p {
+  margin: 0;
+  max-width: 720px;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 15px;
+  line-height: 1.5;
+  font-weight: 650;
+}
+
+.page-hero-standard .page-hero-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex: 0 0 auto;
+}
+
+.page-hero-standard .page-hero-actions .btn-admin-primary,
+.page-hero-standard .page-hero-actions .btn-admin-secondary,
+.page-hero-standard .page-hero-actions button,
+.page-hero-standard .page-hero-actions a {
+  min-height: 48px;
+  padding: 0 20px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  background: #ffffff;
+  color: #111827;
+  font-weight: 950;
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.18);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.page-hero-standard .page-hero-actions .btn-admin-primary:hover,
+.page-hero-standard .page-hero-actions .btn-admin-secondary:hover,
+.page-hero-standard .page-hero-actions button:hover,
+.page-hero-standard .page-hero-actions a:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 18px 36px rgba(15, 23, 42, 0.22);
+}
+
+.dashboard-hidden-status {
+  display: none !important;
+}
+
+@media (max-width: 760px) {
+  .page-hero.page-hero-standard {
+    min-height: auto;
+    padding: 22px;
+    border-radius: 22px;
+  }
+
+  .page-hero-standard .page-hero-title-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .page-hero-standard h2 {
+    font-size: clamp(25px, 8vw, 34px);
+  }
+
+  .page-hero-standard p {
+    font-size: 14px;
+  }
+
+  .page-hero-standard .page-hero-actions {
+    width: 100%;
+    margin-left: 0;
+    justify-content: stretch;
+  }
+
+  .page-hero-standard .page-hero-actions .btn-admin-primary,
+  .page-hero-standard .page-hero-actions .btn-admin-secondary,
+  .page-hero-standard .page-hero-actions button,
+  .page-hero-standard .page-hero-actions a {
+    width: 100%;
+  }
+}

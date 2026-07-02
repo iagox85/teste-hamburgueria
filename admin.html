@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard - DeliveryOS</title>
-  <link rel="stylesheet" href="assets/css/admin.css?v=20260701v10">
+  <link rel="stylesheet" href="assets/css/admin.css?v=20260702heropadrao">
   <link rel="stylesheet" href="assets/css/pages/dashboard.css?v=20260702premiumv2">
 </head>
 <body>
@@ -28,24 +28,18 @@
       </div>
     </header>
 
-    <section class="dashboard-hero-premium dashboard-hero-polish">
-      <div class="dashboard-hero-content">
-        <span class="dashboard-hero-label">🚀 DeliveryOS</span>
-        <h2>Controle sua operação em tempo real</h2>
-        <p>Acompanhe pedidos, cardápio e resultados em uma visão rápida, limpa e profissional.</p>
-
-        <div class="dashboard-hero-actions">
-          <a href="pedidos.html" class="btn-admin-primary">Ver pedidos</a>
-          <a href="produtos.html" class="btn-admin-secondary">Cadastrar produto</a>
+    <section class="page-hero page-hero-standard dashboard-hero-standard">
+      <div class="page-hero-main">
+        <div class="page-hero-title-row">
+          <h2>🚀 Dashboard</h2>
+          <div class="page-hero-actions">
+            <a href="configuracoes.html" class="btn-admin-secondary">Configurar loja</a>
+          </div>
         </div>
-      </div>
-
-      <div class="dashboard-store-card dashboard-store-card-polish">
-        <div class="dashboard-store-icon">D</div>
-        <div>
-          <span>Operação</span>
+        <p>Acompanhe o desempenho da sua loja em tempo real.</p>
+        <div class="dashboard-hidden-status" aria-hidden="true">
           <strong id="dashboardNomeLoja">Tudo pronto</strong>
-          <p id="dashboardResumoLoja">Cardápio, pedidos e notificações funcionando.</p>
+          <span id="dashboardResumoLoja">Cardápio, pedidos e notificações funcionando.</span>
         </div>
       </div>
     </section>
