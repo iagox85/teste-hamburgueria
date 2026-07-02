@@ -44,8 +44,8 @@
         <div class="dashboard-store-icon">D</div>
         <div>
           <span>Operação</span>
-          <strong>Tudo pronto</strong>
-          <p>Cardápio, pedidos e notificações funcionando.</p>
+          <strong id="dashboardNomeLoja">Tudo pronto</strong>
+          <p id="dashboardResumoLoja">Cardápio, pedidos e notificações funcionando.</p>
         </div>
       </div>
     </section>
@@ -55,7 +55,7 @@
         <div class="dashboard-metric-icon">💰</div>
         <div>
           <span>Vendas hoje</span>
-          <strong>R$ 0,00</strong>
+          <strong id="dashboardVendasHoje">R$ 0,00</strong>
           <small>Total confirmado no dia</small>
           <em>Atualiza ao finalizar pedidos</em>
         </div>
@@ -65,7 +65,7 @@
         <div class="dashboard-metric-icon">📦</div>
         <div>
           <span>Pedidos hoje</span>
-          <strong>0</strong>
+          <strong id="dashboardPedidosHoje">0</strong>
           <small>Pedidos gerados no cardápio</small>
           <em>Resumo do movimento da loja</em>
         </div>
@@ -75,7 +75,7 @@
         <div class="dashboard-metric-icon">🔔</div>
         <div>
           <span>Pedidos novos</span>
-          <strong>0</strong>
+          <strong id="dashboardPedidosNovos">0</strong>
           <small>Aguardando aceite</small>
           <em>Atualização em tempo real</em>
         </div>
@@ -85,7 +85,7 @@
         <div class="dashboard-metric-icon">🍔</div>
         <div>
           <span>Produtos ativos</span>
-          <strong>0</strong>
+          <strong id="dashboardProdutosAtivos">0</strong>
           <small>Itens cadastrados no cardápio</small>
           <em>Itens disponíveis no cardápio</em>
         </div>
@@ -102,11 +102,10 @@
           <a href="pedidos.html">Ver todos</a>
         </div>
 
-        <div class="dashboard-empty-state dashboard-empty-polish">
+        <div id="dashboardPedidosRecentes" class="dashboard-empty-state dashboard-empty-polish">
           <div class="dashboard-empty-icon">📦</div>
-          <strong>Ainda não há pedidos recentes</strong>
-          <p>Quando um cliente finalizar um pedido, ele aparecerá aqui para você acompanhar rapidamente.</p>
-          <a href="pedidos.html" class="btn-admin-secondary">Abrir pedidos</a>
+          <strong>Carregando pedidos recentes...</strong>
+          <p>Buscando os últimos pedidos da sua loja.</p>
         </div>
       </article>
 
@@ -165,15 +164,15 @@
           <ul class="dashboard-health-list dashboard-health-polish">
             <li>
               <div><i></i><span>Cardápio público</span></div>
-              <strong>Online</strong>
+              <strong id="dashboardCardapioStatus">Online</strong>
             </li>
             <li>
               <div><i></i><span>Notificações</span></div>
-              <strong>Ativas</strong>
+              <strong id="dashboardNotificacoesStatus">Ativas</strong>
             </li>
             <li>
               <div><i></i><span>Pedidos em tempo real</span></div>
-              <strong>Conectado</strong>
+              <strong id="dashboardRealtimeStatus">Conectado</strong>
             </li>
           </ul>
         </article>
@@ -189,6 +188,7 @@
 <script src="assets/js/supabase.js"></script>
 <script src="assets/js/deliveryos.js?v=20260701core1"></script>
 <script src="assets/js/admin.js"></script>
+<script src="assets/js/dashboard-data.js"></script>
 <script src="assets/js/sidebar.js"></script>
 <script>
   carregarSidebar("dashboard");

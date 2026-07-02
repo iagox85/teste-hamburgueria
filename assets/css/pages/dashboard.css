@@ -798,3 +798,20 @@
     min-height: 170px;
   }
 }
+
+
+.dashboard-recent-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.dashboard-recent-link:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-soft);
+}
+
+.dashboard-recent-icon {
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 950;
+}

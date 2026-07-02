@@ -1,0 +1,242 @@
+/* ============================================================
+   RELATÓRIOS - DELIVERYOS
+   Indicadores reais com visual premium e responsivo.
+   ============================================================ */
+
+.relatorios-page {
+  gap: 20px;
+}
+
+.relatorios-hero {
+  align-items: center;
+}
+
+.relatorios-periodo-box {
+  min-width: 220px;
+  padding: 16px 18px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: #ffffff;
+  box-shadow: var(--shadow-soft);
+}
+
+.relatorios-periodo-box span,
+.relatorio-metrica-card small {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  margin-top: 8px;
+}
+
+.relatorios-periodo-box span {
+  margin-top: 0;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.relatorios-periodo-box strong {
+  color: var(--text);
+  font-size: 18px;
+  font-weight: 950;
+}
+
+.relatorios-metricas .admin-metric-card {
+  min-height: 128px;
+}
+
+.relatorios-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.75fr);
+  gap: 18px;
+  align-items: stretch;
+}
+
+.relatorios-grid-baixo {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+.relatorio-painel {
+  min-height: 330px;
+}
+
+.relatorio-painel-head {
+  margin-bottom: 16px;
+}
+
+.relatorio-loading,
+.relatorio-vazio {
+  display: grid;
+  place-items: center;
+  min-height: 190px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 20px;
+  background: #f8fafc;
+  color: var(--muted);
+  text-align: center;
+  padding: 22px;
+  font-weight: 800;
+}
+
+.relatorio-grafico-barras {
+  display: grid;
+  gap: 12px;
+}
+
+.relatorio-barra-linha {
+  display: grid;
+  grid-template-columns: 74px minmax(0, 1fr) 96px;
+  gap: 12px;
+  align-items: center;
+}
+
+.relatorio-barra-dia {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.relatorio-barra-trilho {
+  height: 13px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  overflow: hidden;
+}
+
+.relatorio-barra-preenchimento {
+  height: 100%;
+  min-width: 7px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--primary), #fb7185);
+}
+
+.relatorio-barra-valor {
+  text-align: right;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 950;
+}
+
+.relatorio-status-lista,
+.relatorio-ranking-lista,
+.relatorio-pedidos-recentes {
+  display: grid;
+  gap: 10px;
+}
+
+.relatorio-status-item,
+.relatorio-ranking-item,
+.relatorio-pedido-item {
+  display: grid;
+  gap: 4px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: #ffffff;
+}
+
+.relatorio-status-item,
+.relatorio-pedido-item {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+}
+
+.relatorio-ranking-item {
+  grid-template-columns: 34px minmax(0, 1fr) auto;
+  align-items: center;
+}
+
+.relatorio-ranking-posicao {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: var(--primary-soft);
+  color: var(--primary);
+  font-size: 13px;
+  font-weight: 950;
+}
+
+.relatorio-status-item strong,
+.relatorio-ranking-item strong,
+.relatorio-pedido-item strong {
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 950;
+}
+
+.relatorio-status-item span,
+.relatorio-ranking-item span,
+.relatorio-pedido-item span {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 750;
+  margin-top: 3px;
+}
+
+.relatorio-status-total,
+.relatorio-ranking-total,
+.relatorio-pedido-total {
+  color: var(--primary);
+  font-size: 14px;
+  font-weight: 950;
+  white-space: nowrap;
+}
+
+.relatorio-status-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 30px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 12px;
+  font-weight: 950;
+}
+
+.relatorio-status-pill.status-novo { background: var(--danger-bg); color: var(--danger); }
+.relatorio-status-pill.status-aceito,
+.relatorio-status-pill.status-preparando { background: #dbeafe; color: #1d4ed8; }
+.relatorio-status-pill.status-pronto,
+.relatorio-status-pill.status-saiu_entrega { background: var(--warning-bg); color: var(--warning); }
+.relatorio-status-pill.status-finalizado { background: var(--success-bg); color: var(--success); }
+.relatorio-status-pill.status-cancelado { background: #f1f5f9; color: #64748b; }
+
+@media (max-width: 1100px) {
+  .relatorios-grid,
+  .relatorios-grid-baixo {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .relatorios-periodo-box {
+    width: 100%;
+  }
+
+  .relatorio-barra-linha {
+    grid-template-columns: 58px minmax(0, 1fr);
+  }
+
+  .relatorio-barra-valor {
+    grid-column: 2;
+    text-align: left;
+  }
+
+  .relatorio-status-item,
+  .relatorio-ranking-item,
+  .relatorio-pedido-item {
+    grid-template-columns: 1fr;
+  }
+
+  .relatorio-status-total,
+  .relatorio-ranking-total,
+  .relatorio-pedido-total {
+    margin-top: 4px;
+  }
+}

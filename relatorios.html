@@ -5,59 +5,104 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Relatórios - DeliveryOS</title>
   <link rel="stylesheet" href="assets/css/admin.css?v=20260701v10">
+  <link rel="stylesheet" href="assets/css/pages/relatorios.css?v=20260702v1">
 </head>
 <body>
 
 <div class="admin-layout">
   <aside id="sidebar" class="sidebar"></aside>
 
-  <main class="content page-stack">
+  <main class="content page-stack relatorios-page">
     <header id="topbar" class="topbar"></header>
 
-    <section class="page-hero">
+    <section class="page-hero relatorios-hero">
       <div>
         <span class="page-hero-kicker">📈 Desempenho</span>
         <h2>Relatórios da loja</h2>
         <p>Acompanhe vendas, pedidos, ticket médio e indicadores para entender melhor o desempenho do seu delivery.</p>
       </div>
+      <div class="relatorios-periodo-box">
+        <span>Período principal</span>
+        <strong>Hoje e mês atual</strong>
+      </div>
     </section>
 
-    <section class="cards">
-      <div class="card admin-metric-card">
+    <section class="cards relatorios-metricas">
+      <div class="card admin-metric-card relatorio-metrica-card">
         <span>Vendas hoje</span>
-        <strong>R$ 0,00</strong>
+        <strong id="relatorioVendasHoje">R$ 0,00</strong>
+        <small id="relatorioComparativoHoje">Pedidos válidos de hoje</small>
       </div>
 
-      <div class="card admin-metric-card">
+      <div class="card admin-metric-card relatorio-metrica-card">
         <span>Pedidos hoje</span>
-        <strong>0</strong>
+        <strong id="relatorioPedidosHoje">0</strong>
+        <small id="relatorioPedidosNovosHoje">0 novos aguardando</small>
       </div>
 
-      <div class="card admin-metric-card">
+      <div class="card admin-metric-card relatorio-metrica-card">
         <span>Faturamento mensal</span>
-        <strong>R$ 0,00</strong>
+        <strong id="relatorioFaturamentoMensal">R$ 0,00</strong>
+        <small id="relatorioPedidosMes">0 pedidos no mês</small>
       </div>
 
-      <div class="card admin-metric-card">
+      <div class="card admin-metric-card relatorio-metrica-card">
         <span>Ticket médio</span>
-        <strong>R$ 0,00</strong>
+        <strong id="relatorioTicketMedio">R$ 0,00</strong>
+        <small>Média por pedido válido</small>
       </div>
     </section>
 
-    <section class="admin-list-panel">
-      <div class="admin-list-head">
-        <div>
-          <h2>Resumo de desempenho</h2>
-          <p>Os dados serão preenchidos automaticamente quando os pedidos começarem a entrar.</p>
+    <section class="relatorios-grid">
+      <article class="admin-list-panel relatorio-painel">
+        <div class="admin-list-head relatorio-painel-head">
+          <div>
+            <h2>Últimos 7 dias</h2>
+            <p>Faturamento diário com base nos pedidos não cancelados.</p>
+          </div>
         </div>
-      </div>
+        <div id="relatorioGraficoDias" class="relatorio-grafico-barras">
+          <div class="relatorio-loading">Carregando gráfico...</div>
+        </div>
+      </article>
 
-      <div class="relatorios-placeholder">
-        <div>
-          <h3>Relatórios em preparação</h3>
-          <p>Assim que a loja receber pedidos, esta área poderá mostrar gráficos, produtos mais vendidos e faturamento por período.</p>
+      <article class="admin-list-panel relatorio-painel">
+        <div class="admin-list-head relatorio-painel-head">
+          <div>
+            <h2>Status dos pedidos</h2>
+            <p>Distribuição dos pedidos recentes da loja.</p>
+          </div>
         </div>
-      </div>
+        <div id="relatorioStatusPedidos" class="relatorio-status-lista">
+          <div class="relatorio-loading">Carregando status...</div>
+        </div>
+      </article>
+    </section>
+
+    <section class="relatorios-grid relatorios-grid-baixo">
+      <article class="admin-list-panel relatorio-painel">
+        <div class="admin-list-head relatorio-painel-head">
+          <div>
+            <h2>Produtos mais vendidos</h2>
+            <p>Ranking calculado pelos itens registrados nos pedidos.</p>
+          </div>
+        </div>
+        <div id="relatorioProdutosVendidos" class="relatorio-ranking-lista">
+          <div class="relatorio-loading">Carregando produtos...</div>
+        </div>
+      </article>
+
+      <article class="admin-list-panel relatorio-painel">
+        <div class="admin-list-head relatorio-painel-head">
+          <div>
+            <h2>Pedidos recentes</h2>
+            <p>Últimos pedidos recebidos no cardápio.</p>
+          </div>
+        </div>
+        <div id="relatorioPedidosRecentes" class="relatorio-pedidos-recentes">
+          <div class="relatorio-loading">Carregando pedidos...</div>
+        </div>
+      </article>
     </section>
   </main>
 </div>
@@ -69,6 +114,7 @@
 <script src="assets/js/admin.js"></script>
 <script src="assets/js/sidebar.js"></script>
 <script src="assets/js/topbar.js"></script>
+<script src="assets/js/relatorios.js?v=20260702v1"></script>
 
 <script>
   carregarSidebar("relatorios");
